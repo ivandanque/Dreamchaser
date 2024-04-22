@@ -10,18 +10,20 @@ public class PlayerDodge : MonoBehaviour
     private Rigidbody Rb;
     private PlayerMovement PM;
 
-    [Header("Dash Settings")]
-    [SerializeField] private float DashForce;
-    [SerializeField] private float DashUpwardForce;
-    [SerializeField] private float DashUpwardSpeedCap;
-    [SerializeField] private float DashTime;
-    [SerializeField] private float DashCooldown;
+    [Header("Basic Settings")]
+    public float DashForce;
+    public float DashUpwardForce;
+    public float DashUpwardSpeedCap;
+    public float DashTime;
+    public float DashCooldown;
+    public float DashBufferTime;
+    private float DashBufferCtr;
 
-    [Header("More Dash Settings")]
-    [SerializeField] private bool UseCameraForward = true;
-    [SerializeField] private bool AllowAllDirections = true;
-    [SerializeField] private bool DisableGravity = false;
-    [SerializeField] private bool ResetVelocity = true;
+    [Header("Advanced Settings")]
+    public bool UseCameraForward = true;
+    public bool AllowAllDirections = true;
+    public bool DisableGravity = false;
+    public bool ResetVelocity = true;
 
     private float DashCooldownTimer;
     private Vector3 DelayedForceToApply;
@@ -34,7 +36,14 @@ public class PlayerDodge : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.LeftControl)) Dash();
+        if (Input.GetKeyDown(KeyCode.LeftControl)) DashBufferCtr = DashBufferTime;
+        else DashBufferCtr -= Time.deltaTime;
+
+        if (DashBufferCtr > 0f && PM.IsGrounded)
+        {
+            DashBufferCtr = 0f;
+            Dash();
+        }    
 
         if (DashCooldownTimer > 0) DashCooldownTimer -= Time.deltaTime;
     }
@@ -83,8 +92,7 @@ public class PlayerDodge : MonoBehaviour
         if (AllowAllDirections) direction = ForwardT.forward * verticalInput + ForwardT.right * horizontalInput;
         else direction = ForwardT.forward;
 
-        if (verticalInput == 0 && horizontalInput == 0)
-            direction = ForwardT.forward;
+        if (verticalInput == 0 && horizontalInput == 0) direction = ForwardT.forward;
 
         return direction.normalized;
     }

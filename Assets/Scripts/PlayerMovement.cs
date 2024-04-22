@@ -7,32 +7,32 @@ using static PlayerController;
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement")]
-    [SerializeField] private float MoveSpeed;
-    [SerializeField] private float WalkSpeed;
-    [SerializeField] private float SprintMultiplier;
-    [SerializeField] private Transform Orientation;
-    [SerializeField] private Rigidbody Rb;
+    public float MoveSpeed;
+    public float WalkSpeed;
+    public float SprintMultiplier;
+    public Transform Orientation;
+    public Rigidbody Rb;
     Vector3 MoveDirection;
 
     [Header("Ground Settings")]
-    [SerializeField] private float PlayerHeight;
-    [SerializeField] private LayerMask Ground;
-    [SerializeField] private float GroundDrag;
+    public float PlayerHeight;
+    public LayerMask Ground;
+    public float GroundDrag;
     public bool IsGrounded;
 
     [Header("Jump Settings")]
-    [SerializeField] private float JumpForce;
-    [SerializeField] private float JumpCooldown;
-    [SerializeField] private float AirMultiplier;
-    [SerializeField] private float CoyoteTime;
+    public float JumpForce;
+    public float JumpCooldown;
+    public float AirMultiplier;
+    public float CoyoteTime;
     private float CoyoteTimeCtr;
-    [SerializeField] private float JumpBufferTime;
+    public float JumpBufferTime;
     private float JumpBufferCtr;
     private bool ReadyToJump = true;
 
     [Header("Dash Settings")]
-    [SerializeField] private float DashSpeed;
-    [SerializeField] private float DashSpeedChangeFactor;
+    public float DashSpeed;
+    public float DashSpeedChangeFactor;
     [HideInInspector] public float MaxYSpeed;
     public bool IsDashing;
 
@@ -55,6 +55,7 @@ public class PlayerMovement : MonoBehaviour
         //Ground Check
         IsGrounded = Physics.Raycast(transform.position, Vector3.down, PlayerHeight * 0.5f + 0.1f, Ground);
 
+        MovePlayer();
         SpeedControl();
         StateHandler();
 
@@ -63,32 +64,29 @@ public class PlayerMovement : MonoBehaviour
         else Rb.drag = 0;
     }
 
-    private void FixedUpdate()
-    {
-        MovePlayer();
-    }
-
     private void MovePlayer()
     {
-        if (State == MovementState.Dashing) return;
-
         //Coyote Time
         if (IsGrounded) CoyoteTimeCtr = CoyoteTime;
         else CoyoteTimeCtr -= Time.deltaTime;
 
         //Jump Buffer
         if (Input.GetKeyDown(KeyCode.Space)) JumpBufferCtr = JumpBufferTime;
+
+            
         else JumpBufferCtr -= Time.deltaTime;
 
-        MoveDirection = Orientation.forward * Input.GetAxisRaw("Vertical") + Orientation.right * Input.GetAxisRaw("Horizontal");
-        if (IsGrounded) Rb.AddForce(MoveDirection.normalized * MoveSpeed * 10f, ForceMode.Force);
-        else if (!IsGrounded) Rb.AddForce(MoveDirection.normalized * MoveSpeed * 10f * AirMultiplier, ForceMode.Force);
+        if (State == MovementState.Dashing) return;
 
-        if (Input.GetKey(KeyCode.Space) && ReadyToJump && IsGrounded)
+        MoveDirection = Orientation.forward * Input.GetAxisRaw("Vertical") + Orientation.right * Input.GetAxisRaw("Horizontal");
+        if (IsGrounded) Rb.AddForce(10f * MoveSpeed * MoveDirection.normalized, ForceMode.Force);
+        else if (!IsGrounded) Rb.AddForce(10f * AirMultiplier * MoveSpeed * MoveDirection.normalized, ForceMode.Force);
+
+        if (JumpBufferCtr > 0f && ReadyToJump && CoyoteTimeCtr > 0f)
         {
             ReadyToJump = false;
-            CoyoteTimeCtr = 0;
-            JumpBufferCtr = 0;
+            CoyoteTimeCtr = 0f;
+            JumpBufferCtr = 0f;
             Jump();
             Invoke(nameof(ResetJump), JumpCooldown);
         }
