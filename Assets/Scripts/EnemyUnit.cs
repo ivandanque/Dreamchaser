@@ -8,9 +8,10 @@ public class EnemyUnit : MonoBehaviour
 {
     [Header("References")]
     private GameManager GM;
-    private Transform Player;
+    [SerializeField] private Transform Player;
     public NavMeshAgent Agent;
-    private List<Attack> Attacks;
+    public List<Attack> Attacks;
+    public List<Collider> AttackColliders;
 
     [Header("Stats")]
     public string Name;
@@ -24,16 +25,16 @@ public class EnemyUnit : MonoBehaviour
     [Header("Settings")]
     public LayerMask PlayerLayer;
     public float SightRange;
-    public float AttackRange;
+    private float AttackRange;
     public float SafeRange;
 
     private float InterruptMeter;
     private Attack ActiveAttack;
 
-    private bool IsPlayerInSight;
-    private bool IsPlayerInAttackRange;
-    private bool IsSafeToAttack;
-    private bool IsAttacking;
+    [SerializeField] private bool IsPlayerInSight;
+    [SerializeField] private bool IsPlayerInAttackRange;
+    [SerializeField] private bool IsSafeToAttack;
+    [SerializeField] private bool IsAttacking;
     private bool IsMoving;
 
     private void Start()
@@ -48,13 +49,22 @@ public class EnemyUnit : MonoBehaviour
     {
         if (IsAttacking) return;
 
-        IsPlayerInSight = Physics.CheckSphere(Player.position, SightRange, PlayerLayer);
-        IsSafeToAttack = Physics.CheckSphere(Player.position, SafeRange, PlayerLayer);
+        IsPlayerInSight = Physics.CheckSphere(transform.position, SightRange, PlayerLayer);
+        IsSafeToAttack = !Physics.CheckSphere(transform.position, SafeRange, PlayerLayer);
 
         if (IsPlayerInSight)
         {
             transform.LookAt(Player);
-            if (IsSafeToAttack) AttackPlayer(ChooseAttack());
+            if (IsSafeToAttack)
+            {
+                Attack QueuedAttack = ChooseAttack();
+                if (QueuedAttack != null)
+                {
+                    AttackRange = QueuedAttack.Range;
+                    AttackPlayer(QueuedAttack);
+                }
+                else Agent.SetDestination(Player.position);
+            }
             else
             {
                 Agent.SetDestination(Player.position);
@@ -69,12 +79,14 @@ public class EnemyUnit : MonoBehaviour
         IsAttacking = true;
         ActiveAttack = attack;
 
+        ActiveAttack.Damage = Attack;
+
         Invoke(nameof(ResetAttack), attack.AttackCooldown);
     }
 
     private Attack ChooseAttack()
     {
-        List<Attack> DoableAttacks = Attacks.FindAll(attack => IsPlayerInAttackRange = Physics.CheckSphere(Player.position, attack.Range, PlayerLayer));
+        List<Attack> DoableAttacks = Attacks.FindAll(attack => Physics.CheckSphere(transform.position, attack.Range, PlayerLayer));
         DoableAttacks.Sort((a,b) => a.Range.CompareTo(b.Range));
         return DoableAttacks[0];
     }
