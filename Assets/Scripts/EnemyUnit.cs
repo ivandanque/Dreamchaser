@@ -30,6 +30,7 @@ public class EnemyUnit : MonoBehaviour
 
     private float InterruptMeter;
     private Attack ActiveAttack;
+    private Attack QueuedAttack;
 
     [SerializeField] private bool IsPlayerInSight;
     [SerializeField] private bool IsPlayerInAttackRange;
@@ -57,7 +58,8 @@ public class EnemyUnit : MonoBehaviour
             transform.LookAt(Player);
             if (IsSafeToAttack)
             {
-                Attack QueuedAttack = ChooseAttack();
+                QueuedAttack = ChooseAttack();
+                Debug.Log(QueuedAttack);
                 if (QueuedAttack != null)
                 {
                     AttackRange = QueuedAttack.Range;
@@ -88,7 +90,7 @@ public class EnemyUnit : MonoBehaviour
     {
         List<Attack> DoableAttacks = Attacks.FindAll(attack => Physics.CheckSphere(transform.position, attack.Range, PlayerLayer));
         DoableAttacks.Sort((a,b) => a.Range.CompareTo(b.Range));
-        return DoableAttacks[0];
+        return DoableAttacks.Count > 0 ? DoableAttacks[0] : null;
     }
 
     private void ResetAttack()
