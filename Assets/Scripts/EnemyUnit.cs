@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -10,8 +9,7 @@ public class EnemyUnit : MonoBehaviour
     private GameManager GM;
     [SerializeField] private Transform Player;
     public NavMeshAgent Agent;
-    public List<Attack> Attacks;
-    public List<Collider> AttackColliders;
+    public List<AttackSequence> Attacks;
 
     [Header("Stats")]
     public string Name;
@@ -29,13 +27,14 @@ public class EnemyUnit : MonoBehaviour
     public float SafeRange;
 
     private float InterruptMeter;
-    private Attack ActiveAttack;
-    private Attack QueuedAttack;
+    //private AttackSequence ActiveAttackSequence;
+    //private AttackSequence QueuedAttack;
 
     [SerializeField] private bool IsPlayerInSight;
     [SerializeField] private bool IsPlayerInAttackRange;
     [SerializeField] private bool IsSafeToAttack;
     [SerializeField] private bool IsAttacking;
+    [SerializeField] private bool IsLockedOn;
     private bool IsMoving;
 
     private void Start()
@@ -43,16 +42,20 @@ public class EnemyUnit : MonoBehaviour
         GM = GameObject.Find("GameManager").GetComponent<GameManager>();
         Player = GameObject.Find("Player").transform;
         Agent = GetComponent<NavMeshAgent>();
-        if (!gameObject.CompareTag("Player")) SetStats(GM.Enemies.Find(unit => Name.Equals(unit.name)));
     }
 
     private void Update()
     {
-        if (IsAttacking) return;
+        if (IsAttacking)
+        {
+            if (IsLockedOn) transform.LookAt(Player);
+            return;
+        }
 
         IsPlayerInSight = Physics.CheckSphere(transform.position, SightRange, PlayerLayer);
         IsSafeToAttack = !Physics.CheckSphere(transform.position, SafeRange, PlayerLayer);
 
+        /*
         if (IsPlayerInSight)
         {
             transform.LookAt(Player);
@@ -62,8 +65,8 @@ public class EnemyUnit : MonoBehaviour
                 Debug.Log(QueuedAttack);
                 if (QueuedAttack != null)
                 {
-                    AttackRange = QueuedAttack.Range;
-                    AttackPlayer(QueuedAttack);
+                    AttackRange = QueuedAttack.ActivationRange;
+                    DoAttackSequence(QueuedAttack);
                 }
                 else Agent.SetDestination(Player.position);
             }
@@ -74,24 +77,26 @@ public class EnemyUnit : MonoBehaviour
             }
         }
         else Agent.SetDestination(transform.position);
+        */
     }
 
-    private void AttackPlayer(Attack attack)
+    private void DoAttackSequence()
     {
         IsAttacking = true;
-        ActiveAttack = attack;
+        //ActiveAttackSequence = attack;
 
-        ActiveAttack.Damage = Attack;
+        //do attack here
 
-        Invoke(nameof(ResetAttack), attack.AttackCooldown);
+        ResetAttack();
     }
 
-    private Attack ChooseAttack()
+    /*
+    private AttackSequence ChooseAttack()
     {
-        List<Attack> DoableAttacks = Attacks.FindAll(attack => Physics.CheckSphere(transform.position, attack.Range, PlayerLayer));
-        DoableAttacks.Sort((a,b) => a.Range.CompareTo(b.Range));
-        return DoableAttacks.Count > 0 ? DoableAttacks[0] : null;
-    }
+        List<AttackSequence> DoableAttacks = Attacks.FindAll(attack => Physics.CheckSphere(transform.position, attack.ActivationRange, PlayerLayer));
+        DoableAttacks.Sort((a,b) => a.ActivationRange.CompareTo(b.ActivationRange));
+        ret
+    */
 
     private void ResetAttack()
     {
@@ -114,16 +119,19 @@ public class EnemyUnit : MonoBehaviour
         return (10 * (DefenseFactor - 10)) / ((10 * DefenseFactor) - Defense - 100);
     }
 
-    private void SetStats(Unit unit)
+    private void HitboxAttack(Attack attack)
     {
-        Name = unit.name;
-        Health = unit.health;
-        Attack = unit.attack;
-        Defense = unit.defense;
-        DefenseFactor = unit.defenseFactor;
-        CritChance = unit.critChance;
-        CritMultiplier = unit.critMultiplier;
-        Attacks = new List<Attack>(unit.attacks);
+        StartCoroutine(ActivateCollider(attack.AssignedObject.GetComponent<Collider>(), attack.StartupTime, attack.ActiveTime, attack.RecoveryTime));
+    }
+
+    private void ProjectileAttack()
+    {
+        
+    }
+
+    private void CollisionAttack()
+    {
+
     }
 
     private void OnDrawGizmosSelected()
@@ -133,6 +141,15 @@ public class EnemyUnit : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, SafeRange);
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, ActiveAttack == null ? 0 : ActiveAttack.Range);
+        //Gizmos.DrawWireSphere(transform.position, ActiveAttackSequence == null ? 0 : ActiveAttackSequence.ActivationRange);
+    }
+
+    IEnumerator ActivateCollider(Collider collider, float startup, float active, float recovery)
+    {
+        yield return new WaitForSeconds(startup);
+        collider.enabled = true;
+        yield return new WaitForSeconds(active);
+        collider.enabled = false;
+        yield return new WaitForSeconds(recovery);
     }
 }

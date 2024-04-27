@@ -5,8 +5,7 @@ public class PlayerUnit : MonoBehaviour
 {
     [Header("References")]
     private GameManager GM;
-    public List<Attack> Attacks;
-    public List<Collider> AttackColliders;
+    //public List<AttackSequence> Attacks;
 
     [Header("Stats")]
     public string Name;
@@ -73,18 +72,6 @@ public class PlayerUnit : MonoBehaviour
     private float DefenseMultiplier()
     {
         return (10 * (DefenseFactor - 10)) / ((10 * DefenseFactor) - Defense - 100);
-    }
-
-    private void SetStats(Unit unit)
-    {
-        Name = unit.name;
-        Health = unit.health;
-        Attack = unit.attack;
-        Defense = unit.defense;
-        DefenseFactor = unit.defenseFactor;
-        CritChance = unit.critChance;
-        CritMultiplier = unit.critMultiplier;
-        Attacks = new List<Attack>(unit.attacks);
     }
 
     /*
