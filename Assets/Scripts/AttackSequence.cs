@@ -29,11 +29,11 @@ public class Attack
     public float PushbackForce;
 
     public GameObject AssignedObject;
+}
 
-    public enum AttackType
-    {
-        Hitbox,
-        Projectile,
-        Collision
-    }
+public enum AttackType
+{
+    Hitbox,
+    Projectile,
+    Collision
 }

@@ -5,6 +5,7 @@ public class PlayerUnit : MonoBehaviour
 {
     [Header("References")]
     private GameManager GM;
+    private PlayerMovement PM;
     //public List<AttackSequence> Attacks;
 
     [Header("Stats")]
@@ -23,6 +24,11 @@ public class PlayerUnit : MonoBehaviour
     private bool IsFallen;
 
     private bool IsRecentlyDamaged;
+
+    private void Start()
+    {
+        PM = GetComponent<PlayerMovement>();
+    }
 
     private void Update()
     {
@@ -45,6 +51,7 @@ public class PlayerUnit : MonoBehaviour
     {
         IsRecentlyDamaged = true;
         Health -= damage * DefenseMultiplier();
+        Debug.Log(string.Format("I took {0} damage! Now I have {1} health left!", damage, Health));
         Invoke(nameof(ResetDamageInterrupt), DamageInterruptionInterval);
     }
 
@@ -60,6 +67,7 @@ public class PlayerUnit : MonoBehaviour
         if (InterruptMeter <= 0)
         {
             IsFallen = true;
+            PM.PlayerStatus = PlayerMovement.StatusEffect.Fallen;
             InterruptMeter = 0;
         }
     }

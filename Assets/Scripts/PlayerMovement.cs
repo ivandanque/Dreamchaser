@@ -44,6 +44,18 @@ public class PlayerMovement : MonoBehaviour
         Airborne
     }
     private MovementState State;
+    public enum StatusEffect
+    {
+        Fallen,
+        Airborne,
+        Stunned,
+        Burning,
+        Slowed,
+        Rooted,
+        Wounded
+    }
+
+    public StatusEffect PlayerStatus;
 
     private void Start()
     {
