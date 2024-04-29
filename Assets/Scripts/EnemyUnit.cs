@@ -10,6 +10,7 @@ public class EnemyUnit : MonoBehaviour
     private GameManager GM;
     [SerializeField] private Transform Player;
     public NavMeshAgent Agent;
+    private AttackHandler AH;
     public List<AttackSequence> Attacks;
 
     [Header("Stats")]
@@ -30,13 +31,13 @@ public class EnemyUnit : MonoBehaviour
     private float InterruptMeter;
     private AttackSequence ActiveAttackSequence;
     private AttackSequence QueuedAttack;
-    private Attack ActiveHit;
-    private GameObject ActiveObject;
+    public Attack ActiveHit;
+    public GameObject ActiveObject;
 
     [SerializeField] private bool IsPlayerInSight;
     [SerializeField] private bool IsPlayerInAttackRange;
     [SerializeField] private bool IsSafeToAttack;
-    [SerializeField] private bool IsAttacking;
+    public bool IsAttacking;
     [SerializeField] private bool IsLockedOn;
     private bool IsMoving;
 
@@ -44,6 +45,7 @@ public class EnemyUnit : MonoBehaviour
     {
         GM = GameObject.Find("GameManager").GetComponent<GameManager>();
         Player = GameObject.Find("Player").transform;
+        AH = GetComponent<AttackHandler>();
         Agent = GetComponent<NavMeshAgent>();
     }
 
@@ -73,11 +75,7 @@ public class EnemyUnit : MonoBehaviour
                 }
                 else Agent.SetDestination(Player.position);
             }
-            else
-            {
-                Agent.SetDestination(Player.position);
-                Agent.velocity = -Agent.velocity;
-            }
+            else Agent.SetDestination(transform.position + transform.position - Player.position);
         }
         else Agent.SetDestination(transform.position);
     }
@@ -94,10 +92,10 @@ public class EnemyUnit : MonoBehaviour
             switch (hit.Type)
             {
                 case AttackType.Hitbox:
-                    Invoke(nameof(ActivateCollider), hit.StartupTime);
+                    AH.StaticColliderAttack();
                     break;
                 case AttackType.Projectile:
-                    Invoke(nameof(FireProjectile), hit.StartupTime);
+                    AH.ProjectileAttack();
                     break;
                 case AttackType.Collision:
                     break;
@@ -130,12 +128,6 @@ public class EnemyUnit : MonoBehaviour
         return (10 * (DefenseFactor - 10)) / ((10 * DefenseFactor) - Defense - 100);
     }
 
-    private void ResetAttack()
-    {
-        ActiveObject = null;
-        IsAttacking = false;
-    }
-
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.green;
@@ -144,29 +136,5 @@ public class EnemyUnit : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, SafeRange);
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, ActiveAttackSequence == null ? 0 : ActiveAttackSequence.ActivationRange);
-    }
-
-    private void ActivateCollider()
-    {
-        Collider collider = ActiveObject.GetComponent<Collider>();
-        Collider[] col = Physics.OverlapBox(collider.bounds.center, collider.bounds.extents, collider.transform.rotation, PlayerLayer);
-        PlayerUnit pu;
-        foreach (Collider cold in col)
-        {
-            pu = cold.GetComponent<PlayerUnit>();
-            pu.TakeDamage(DealDamage());
-            pu.InterruptPlayer(ActiveHit.InterruptValue);
-        }
-        Invoke(nameof(ResetAttack), ActiveHit.RecoveryTime);
-    }
-
-    private void FireProjectile()
-    {
-        //Rigidbody rb = Instantiate(ActiveObject);
-    }
-
-    private void RamAttack()
-    {
-
     }
 }

@@ -116,8 +116,9 @@ GameObject:
   - component: {fileID: 5346531066618580596}
   - component: {fileID: 5833247974552683159}
   - component: {fileID: 6816959846993299157}
-  - component: {fileID: 4503553645077746959}
   - component: {fileID: 7093486895120553866}
+  - component: {fileID: 4503553645077746959}
+  - component: {fileID: -2707827269794840876}
   m_Layer: 0
   m_Name: Singhoul
   m_TagString: Untagged
@@ -193,50 +194,6 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &4503553645077746959
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3611212431012918517}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 24199e9b9334dad4db69a200527ac7e1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Player: {fileID: 0}
-  Agent: {fileID: 0}
-  Attacks:
-  - Name: Basic Melee Attack
-    ActivationRange: 2
-    attacks:
-    - Type: 0
-      AttackScaling: 1
-      Description: Ghoul Punch!
-      StartupTime: 0.5
-      ActiveTime: 1
-      RecoveryTime: 0.5
-      InterruptValue: 0
-      MovementForce: 0
-      PushbackForce: 0
-      AssignedObject: {fileID: 7729775812650480471}
-  Name: Singhoul
-  Health: 10
-  Attack: 10
-  Defense: 0
-  CritChance: 0.1
-  CritMultiplier: 1.1
-  PlayerLayer:
-    serializedVersion: 2
-    m_Bits: 256
-  SightRange: 20
-  SafeRange: 0
-  IsPlayerInSight: 0
-  IsPlayerInAttackRange: 0
-  IsSafeToAttack: 0
-  IsAttacking: 0
-  IsLockedOn: 0
 --- !u!195 &7093486895120553866
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -259,6 +216,74 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 1
   m_ObstacleAvoidanceType: 0
+--- !u!114 &4503553645077746959
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3611212431012918517}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24199e9b9334dad4db69a200527ac7e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Player: {fileID: 0}
+  Agent: {fileID: 0}
+  Attacks:
+  - Name: Basic Melee Attack
+    ActivationRange: 2
+    attacks:
+    - Type: 0
+      AttackScaling: 1
+      Description: Ghoul Punch!
+      StartTime: 0
+      ActiveTime: 1
+      EndTime: 0
+      InterruptValue: 0
+      MovementForce: 0
+      PushbackForce: 0
+      AssignedObject: {fileID: 7729775812650480471}
+  Name: Singhoul
+  Health: 10
+  Attack: 10
+  Defense: 0
+  CritChance: 0.1
+  CritMultiplier: 1.1
+  PlayerLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  SightRange: 20
+  SafeRange: 0
+  ActiveHit:
+    Type: 0
+    AttackScaling: 0
+    Description: 
+    StartTime: 0
+    ActiveTime: 0
+    EndTime: 0
+    InterruptValue: 0
+    MovementForce: 0
+    PushbackForce: 0
+    AssignedObject: {fileID: 0}
+  ActiveObject: {fileID: 0}
+  IsPlayerInSight: 0
+  IsPlayerInAttackRange: 0
+  IsSafeToAttack: 0
+  IsAttacking: 0
+  IsLockedOn: 0
+--- !u!114 &-2707827269794840876
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3611212431012918517}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14f3e58cef7b70a42a3076da84c9ed64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4377874443195575513
 GameObject:
   m_ObjectHideFlags: 0

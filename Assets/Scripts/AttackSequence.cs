@@ -19,9 +19,9 @@ public class Attack
     public string Description;
 
     [Header("Frame Data")]
-    public float StartupTime;
+    public float StartTime;
     public float ActiveTime;
-    public float RecoveryTime;
+    public float EndTime;
 
     [Header("Other Attack Data")]
     public float InterruptValue;
