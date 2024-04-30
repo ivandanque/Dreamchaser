@@ -6,80 +6,86 @@ public class PlayerUnit : MonoBehaviour
     [Header("References")]
     private GameManager GM;
     private PlayerMovement PM;
+    public HealthBar healthBar;
     //public List<AttackSequence> Attacks;
 
     [Header("Stats")]
-    public string Name;
-    public float Health;
-    public float Attack;
-    public float Defense;
-    private float DefenseFactor;
-    public float CritChance;
-    public float CritMultiplier;
+    public new string name;
+    public float maxHealth;
+    public float attack;
+    public float defense;
+    private float defenseFactor;
+    public float critChance;
+    public float critMultiplier;
 
-    public float DamageInterruptionInterval;
-    public float InterruptMeterMax;
-    private float InterruptMeter;
+    public float damageInterruptionInterval;
+    public float interruptMeterMax;
+    private float interruptMeter;
 
-    private bool IsFallen;
+    private float currentHealth;
 
-    private bool IsRecentlyDamaged;
+    private bool isFallen;
+
+    private bool isRecentlyDamaged;
+    private bool isRecentlyInterrupted;
 
     private void Start()
     {
         PM = GetComponent<PlayerMovement>();
+        currentHealth = maxHealth;
+        healthBar.SetMaxHealth(maxHealth);
     }
 
     private void Update()
     {
-        if (IsFallen)
+        if (isFallen)
         {
-            if (!IsRecentlyDamaged)
+            if (!isRecentlyDamaged)
             {
-                InterruptMeter += Time.deltaTime / 3;
-                if (InterruptMeter >= InterruptMeterMax)
+                interruptMeter += Time.deltaTime / 3;
+                if (interruptMeter >= interruptMeterMax)
                 {
-                    IsFallen = false;
-                    InterruptMeter = InterruptMeterMax;
+                    isFallen = false;
+                    interruptMeter = interruptMeterMax;
                 }
             }
-            else InterruptMeter = 0;
+            else interruptMeter = 0;
         }
     }
 
     public void TakeDamage(float damage)
     {
-        IsRecentlyDamaged = true;
-        Health -= damage * DefenseMultiplier();
-        Debug.Log(string.Format("I took {0} damage! Now I have {1} health left!", damage, Health));
-        Invoke(nameof(ResetDamageInterrupt), DamageInterruptionInterval);
+        isRecentlyDamaged = true;
+        currentHealth -= damage * DefenseMultiplier();
+        healthBar.SetHealth(currentHealth);
+        Invoke(nameof(ResetDamageInterrupt), damageInterruptionInterval);
     }
 
     public float DealDamage()
     {
-        if (Random.value <= CritChance) return Attack * CritMultiplier;
-        return Attack;
+        if (Random.value <= critChance) return attack * critMultiplier;
+        return attack;
     }
 
     public void InterruptPlayer(float interruptValue)
     {
-        InterruptMeter -= interruptValue;
-        if (InterruptMeter <= 0)
+        interruptMeter -= interruptValue;
+        if (interruptMeter <= 0 && !isFallen)
         {
-            IsFallen = true;
+            isFallen = true;
             PM.PlayerStatus = PlayerMovement.StatusEffect.Fallen;
-            InterruptMeter = 0;
+            interruptMeter = 0;
         }
     }
 
     private void ResetDamageInterrupt()
     {
-        IsRecentlyDamaged = false;
+        isRecentlyDamaged = false;
     }
 
     private float DefenseMultiplier()
     {
-        return (10 * (DefenseFactor - 10)) / ((10 * DefenseFactor) - Defense - 100);
+        return (10 * (defenseFactor - 10)) / ((10 * defenseFactor) - defense - 100);
     }
 
     /*

@@ -208,7 +208,7 @@ NavMeshAgent:
   m_Acceleration: 100
   avoidancePriority: 50
   m_AngularSpeed: 1000
-  m_StoppingDistance: 1
+  m_StoppingDistance: 0.5
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -228,50 +228,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24199e9b9334dad4db69a200527ac7e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Player: {fileID: 0}
-  Agent: {fileID: 0}
-  Attacks:
-  - Name: Basic Melee Attack
-    ActivationRange: 2
+  player: {fileID: 0}
+  agent: {fileID: 0}
+  attacks:
+  - name: Basic Attack
+    activationRange: 2
     attacks:
-    - Type: 0
-      AttackScaling: 1
-      Description: Ghoul Punch!
-      StartTime: 0
-      ActiveTime: 1
-      EndTime: 0
-      InterruptValue: 0
-      MovementForce: 0
-      PushbackForce: 0
-      AssignedObject: {fileID: 7729775812650480471}
-  Name: Singhoul
-  Health: 10
-  Attack: 10
-  Defense: 0
-  CritChance: 0.1
-  CritMultiplier: 1.1
-  PlayerLayer:
+    - attackType: 0
+      attackScaling: 1
+      description: Ghoul Punch!
+      startTime: 0.25
+      activeTime: 0.5
+      endTime: 0.25
+      interruptValue: 5
+      movementSpeed: 0
+      pushbackForce: 5
+      assignedObject: {fileID: 7729775812650480471}
+  name: 
+  health: 10
+  attack: 10
+  defense: 0
+  critChance: 0.1
+  critMultiplier: 1.1
+  playerLayer:
     serializedVersion: 2
     m_Bits: 256
-  SightRange: 20
-  SafeRange: 0
-  ActiveHit:
-    Type: 0
-    AttackScaling: 0
-    Description: 
-    StartTime: 0
-    ActiveTime: 0
-    EndTime: 0
-    InterruptValue: 0
-    MovementForce: 0
-    PushbackForce: 0
-    AssignedObject: {fileID: 0}
-  ActiveObject: {fileID: 0}
-  IsPlayerInSight: 0
-  IsPlayerInAttackRange: 0
-  IsSafeToAttack: 0
-  IsAttacking: 0
-  IsLockedOn: 0
+  sightRange: 20
+  safeRange: 0
+  activeHit:
+    attackType: 0
+    attackScaling: 0
+    description: 
+    startTime: 0
+    activeTime: 0
+    endTime: 0
+    interruptValue: 0
+    movementSpeed: 0
+    pushbackForce: 0
+    assignedObject: {fileID: 0}
+  activeObject: {fileID: 0}
+  isPlayerInSight: 0
+  isPlayerInAttackRange: 0
+  isSafeToAttack: 0
+  isAttacking: 0
+  isLockedOn: 0
 --- !u!114 &-2707827269794840876
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -284,6 +284,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14f3e58cef7b70a42a3076da84c9ed64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  attack:
+    attackType: 0
+    attackScaling: 0
+    description: 
+    startTime: 0
+    activeTime: 0
+    endTime: 0
+    interruptValue: 0
+    movementSpeed: 0
+    pushbackForce: 0
+    assignedObject: {fileID: 0}
 --- !u!1 &4377874443195575513
 GameObject:
   m_ObjectHideFlags: 0

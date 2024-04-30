@@ -19,7 +19,7 @@ public class Weapon : ScriptableObject
     [TextArea]
     public string description;
     [Space]
-    public float damage;
+    public float baseAttack;
     public float basicAttackStartup;
     public float basicAttackTime;
     public float basicAttackRecovery;

@@ -7,97 +7,95 @@ using UnityEngine.AI;
 public class EnemyUnit : MonoBehaviour
 {
     [Header("References")]
-    private GameManager GM;
-    [SerializeField] private Transform Player;
-    public NavMeshAgent Agent;
-    private AttackHandler AH;
-    public List<AttackSequence> Attacks;
+    public Transform player;
+    public NavMeshAgent agent;
+    private EnemyAttackHandler EAH;
+    public List<AttackSequence> attacks;
 
     [Header("Stats")]
-    public string Name;
-    public float Health;
-    public float Attack;
-    public float Defense;
-    private float DefenseFactor = 0f;
-    public float CritChance;
-    public float CritMultiplier;
+    public new string name;
+    public float health;
+    public float attack;
+    public float defense;
+    private float defenseFactor = 0f;
+    public float critChance;
+    public float critMultiplier;
 
     [Header("Settings")]
-    public LayerMask PlayerLayer;
-    public float SightRange;
-    private float AttackRange;
-    public float SafeRange;
+    public LayerMask playerLayer;
+    public float sightRange;
+    private float attackRange;
+    public float safeRange;
 
-    private float InterruptMeter;
-    private AttackSequence ActiveAttackSequence;
-    private AttackSequence QueuedAttack;
-    public Attack ActiveHit;
-    public GameObject ActiveObject;
+    private float interruptMeter;
+    private AttackSequence activeAttackSequence;
+    private AttackSequence queuedAttack;
+    public Attack activeHit;
+    public GameObject activeObject;
 
-    [SerializeField] private bool IsPlayerInSight;
-    [SerializeField] private bool IsPlayerInAttackRange;
-    [SerializeField] private bool IsSafeToAttack;
-    public bool IsAttacking;
-    [SerializeField] private bool IsLockedOn;
-    private bool IsMoving;
+    [SerializeField] private bool isPlayerInSight;
+    [SerializeField] private bool isPlayerInAttackRange;
+    [SerializeField] private bool isSafeToAttack;
+    public bool isAttacking;
+    public bool isLockedOn;
+    private bool isMoving;
 
     private void Start()
     {
-        GM = GameObject.Find("GameManager").GetComponent<GameManager>();
-        Player = GameObject.Find("Player").transform;
-        AH = GetComponent<AttackHandler>();
-        Agent = GetComponent<NavMeshAgent>();
+        player = GameObject.Find("Player").transform;
+        EAH = GetComponent<EnemyAttackHandler>();
+        agent = GetComponent<NavMeshAgent>();
     }
 
     private void Update()
     {
-        if (IsAttacking)
+        if (isAttacking)
         {
-            if (IsLockedOn) transform.LookAt(Player);
+            if (isLockedOn) transform.LookAt(player);
             return;
         }
 
-        IsPlayerInSight = Physics.CheckSphere(transform.position, SightRange, PlayerLayer);
-        IsSafeToAttack = !Physics.CheckSphere(transform.position, SafeRange, PlayerLayer);
+        isPlayerInSight = Physics.CheckSphere(transform.position, sightRange, playerLayer);
+        isSafeToAttack = !Physics.CheckSphere(transform.position, safeRange, playerLayer);
 
-        if (IsPlayerInSight)
+        if (isPlayerInSight)
         {
-            transform.LookAt(Player);
-            if (IsSafeToAttack)
+            transform.LookAt(player);
+            if (isSafeToAttack)
             {
-                QueuedAttack = ChooseAttack();
-                if (QueuedAttack != null)
+                queuedAttack = ChooseAttack();
+                if (queuedAttack != null)
                 {
-                    Debug.Log(QueuedAttack.Name);
-                    Agent.SetDestination(transform.position);
-                    AttackRange = QueuedAttack.ActivationRange;
-                    DoAttackSequence(QueuedAttack);
+                    Debug.Log(queuedAttack.name);
+                    agent.SetDestination(transform.position);
+                    attackRange = queuedAttack.activationRange;
+                    DoAttackSequence(queuedAttack);
                 }
-                else Agent.SetDestination(Player.position);
+                else agent.SetDestination(player.position);
             }
-            else Agent.SetDestination(transform.position + transform.position - Player.position);
+            else agent.SetDestination(transform.position + transform.position - player.position);
         }
-        else Agent.SetDestination(transform.position);
+        else agent.SetDestination(transform.position);
     }
 
     private void DoAttackSequence(AttackSequence attack)
     {
-        IsAttacking = true;
-        ActiveAttackSequence = attack;
+        isAttacking = true;
+        activeAttackSequence = attack;
 
         foreach (Attack hit in attack.attacks)
         {
-            ActiveHit = hit;
-            ActiveObject = hit.AssignedObject;
-            switch (hit.Type)
+            EAH.attack = hit;
+            switch (hit.attackType)
             {
-                case AttackType.Hitbox:
-                    AH.StaticColliderAttack();
+                case AttackType.StaticHitbox:
+                    EAH.StaticHitboxAttack();
                     break;
                 case AttackType.Projectile:
-                    AH.ProjectileAttack();
+                    EAH.ProjectileAttack();
                     break;
                 case AttackType.Collision:
+                    EAH.CollideAttack();
                     break;
                 default: 
                     break;
@@ -107,34 +105,28 @@ public class EnemyUnit : MonoBehaviour
 
     private AttackSequence ChooseAttack()
     {
-        List<AttackSequence> DoableAttacks = Attacks.FindAll(attack => Physics.CheckSphere(transform.position, attack.ActivationRange, PlayerLayer));
-        DoableAttacks.Sort((a, b) => a.ActivationRange.CompareTo(b.ActivationRange));
+        List<AttackSequence> DoableAttacks = attacks.FindAll(attack => Physics.CheckSphere(transform.position, attack.activationRange, playerLayer));
+        DoableAttacks.Sort((a, b) => a.activationRange.CompareTo(b.activationRange));
         return DoableAttacks.Count == 0 ? null : DoableAttacks[0];
     }
 
     public void TakeDamage(float damage)
     {
-        Health -= damage * DefenseMultiplier();
-    }
-
-    public float DealDamage()
-    {
-        if (Random.value <= CritChance) return Attack * ActiveHit.AttackScaling * CritMultiplier;
-        return Attack * ActiveHit.AttackScaling;
+        health -= damage * DefenseMultiplier();
     }
 
     private float DefenseMultiplier()
     {
-        return (10 * (DefenseFactor - 10)) / ((10 * DefenseFactor) - Defense - 100);
+        return (10 * (defenseFactor - 10)) / ((10 * defenseFactor) - defense - 100);
     }
 
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(transform.position, SightRange);
+        Gizmos.DrawWireSphere(transform.position, sightRange);
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, SafeRange);
+        Gizmos.DrawWireSphere(transform.position, safeRange);
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, ActiveAttackSequence == null ? 0 : ActiveAttackSequence.ActivationRange);
+        Gizmos.DrawWireSphere(transform.position, activeAttackSequence == null ? 0 : activeAttackSequence.activationRange);
     }
 }

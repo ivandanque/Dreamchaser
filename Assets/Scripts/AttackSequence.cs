@@ -5,8 +5,8 @@ using UnityEngine;
 [System.Serializable]
 public class AttackSequence
 {
-    public string Name;
-    public float ActivationRange;
+    public string name;
+    public float activationRange;
     public List<Attack> attacks = new();
 }
 
@@ -14,26 +14,28 @@ public class AttackSequence
 public class Attack
 {
     [Header("Attack Data")]
-    public AttackType Type;
-    public float AttackScaling;
-    public string Description;
+    public AttackType attackType;
+    public float attackScaling;
+    [TextArea]
+    public string description;
 
     [Header("Frame Data")]
-    public float StartTime;
-    public float ActiveTime;
-    public float EndTime;
+    public float startTime;
+    public float activeTime;
+    public float endTime;
 
     [Header("Other Attack Data")]
-    public float InterruptValue;
-    public float MovementForce;
-    public float PushbackForce;
+    public float interruptValue;
+    public float horizontalSpeed;
+    public float verticalSpeed;
+    public float pushbackForce;
 
-    public GameObject AssignedObject;
+    public GameObject assignedObject;
 }
 
 public enum AttackType
 {
-    Hitbox,
+    StaticHitbox,
     Projectile,
     Collision
 }
