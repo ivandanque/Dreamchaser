@@ -24,6 +24,8 @@ public class PlayerUnit : MonoBehaviour
 
     private float currentHealth;
 
+    public Transform targetedEnemy;
+
     private bool isFallen;
 
     private bool isRecentlyDamaged;

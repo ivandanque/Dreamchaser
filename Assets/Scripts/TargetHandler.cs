@@ -1,0 +1,94 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class TargetHandler : MonoBehaviour
+{
+    public Camera thirdPersonCamera;
+    public Transform orientation;
+    public float maxTargetingAngle;
+    public float targetingRange;
+    public LayerMask enemyLayer;
+    public GameObject targetCursor;
+
+    private PlayerUnit pu;
+    private GameObject enemy;
+    private List<GameObject> validTargets = new();
+    private GameObject closestTarget;
+
+    private void Start()
+    {
+        pu = GetComponent<PlayerUnit>();
+        targetCursor.SetActive(false);
+    }
+
+    private void Update()
+    {
+        validTargets.Clear();
+        Collider[] cols = Physics.OverlapSphere(transform.position, targetingRange, enemyLayer);
+        foreach (Collider col in cols)
+        {
+            enemy = col.gameObject;
+            if (IsEnemyInView(enemy.transform)) validTargets.Add(enemy);
+        }
+
+        if (validTargets.Count > 0)
+        {
+            pu.targetedEnemy = FindClosestTarget();
+            ShowTargetCursor();
+        }
+        else HideTargetCursor();
+    }
+
+    private bool IsEnemyInView(Transform enemy)
+    {
+        if (Vector3.Angle(enemy.position - transform.position, orientation.forward) < maxTargetingAngle) return true;
+        else return false;
+    }
+
+    private Transform FindClosestTarget()
+    {
+        float closestDistance = 0;
+        closestTarget = null;
+        foreach (GameObject target in validTargets)
+        {
+            RaycastHit hit;
+            if (Physics.Raycast(transform.position, target.transform.position - transform.position, out hit, Mathf.Infinity, enemyLayer))
+            {
+                if (closestTarget == null)
+                {
+                    closestDistance = hit.distance;
+                    closestTarget = target;
+                }
+                else
+                {
+                    if (hit.distance < closestDistance)
+                    {
+                        closestDistance = hit.distance;
+                        closestTarget = target;
+                    }
+                }
+            }    
+        }
+        return closestTarget.transform;
+    }
+
+    private void ShowTargetCursor()
+    {
+        targetCursor.SetActive(true);
+        Vector3 viewportRawPosition = thirdPersonCamera.WorldToViewportPoint(closestTarget.transform.position);
+        Vector3 viewportActualPosition = new Vector3(viewportRawPosition.x * 1920, viewportRawPosition.y * 1080 - 1080, 0f);
+        targetCursor.GetComponent<RectTransform>().anchoredPosition = viewportActualPosition;
+    }
+
+    private void HideTargetCursor()
+    {
+        targetCursor.SetActive(false);
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, targetingRange);
+    }
+}
