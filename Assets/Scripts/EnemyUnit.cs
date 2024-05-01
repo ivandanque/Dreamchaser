@@ -10,7 +10,7 @@ public class EnemyUnit : MonoBehaviour
     public Transform player;
     public NavMeshAgent agent;
     private EnemyAttackHandler EAH;
-    public List<AttackSequence> attacks;
+    public List<Attack> attacks;
 
     [Header("Stats")]
     public new string name;
@@ -28,9 +28,9 @@ public class EnemyUnit : MonoBehaviour
     public float safeRange;
 
     private float interruptMeter;
-    private AttackSequence activeAttackSequence;
-    private AttackSequence queuedAttack;
-    public Attack activeHit;
+    private Attack activeAttack;
+    private Attack queuedAttack;
+    public AttackHit activeHit;
     public GameObject activeObject;
 
     [SerializeField] private bool isPlayerInSight;
@@ -69,7 +69,7 @@ public class EnemyUnit : MonoBehaviour
                     Debug.Log(queuedAttack.name);
                     agent.SetDestination(transform.position);
                     attackRange = queuedAttack.activationRange;
-                    DoAttackSequence(queuedAttack);
+                    DoAttack(queuedAttack);
                 }
                 else agent.SetDestination(player.position);
             }
@@ -78,24 +78,24 @@ public class EnemyUnit : MonoBehaviour
         else agent.SetDestination(transform.position);
     }
 
-    private void DoAttackSequence(AttackSequence attack)
+    private void DoAttack(Attack attack)
     {
         isAttacking = true;
-        activeAttackSequence = attack;
+        activeAttack = attack;
 
-        foreach (Attack hit in attack.attacks)
+        foreach (AttackHit hit in attack.attacks)
         {
-            EAH.attack = hit;
+            EAH.attackHit = hit;
             switch (hit.attackType)
             {
-                case AttackType.StaticHitbox:
-                    EAH.StaticHitboxAttack();
+                case AttackHitType.StaticHitbox:
+                    EAH.StaticHitboxHit();
                     break;
-                case AttackType.Projectile:
-                    EAH.ProjectileAttack();
+                case AttackHitType.Projectile:
+                    EAH.ProjectileHit();
                     break;
-                case AttackType.Collision:
-                    EAH.CollideAttack();
+                case AttackHitType.Collision:
+                    EAH.CollisionHit();
                     break;
                 default: 
                     break;
@@ -103,9 +103,9 @@ public class EnemyUnit : MonoBehaviour
         }
     }
 
-    private AttackSequence ChooseAttack()
+    private Attack ChooseAttack()
     {
-        List<AttackSequence> DoableAttacks = attacks.FindAll(attack => Physics.CheckSphere(transform.position, attack.activationRange, playerLayer));
+        List<Attack> DoableAttacks = attacks.FindAll(attack => Physics.CheckSphere(transform.position, attack.activationRange, playerLayer));
         DoableAttacks.Sort((a, b) => a.activationRange.CompareTo(b.activationRange));
         return DoableAttacks.Count == 0 ? null : DoableAttacks[0];
     }
@@ -127,6 +127,6 @@ public class EnemyUnit : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, safeRange);
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, activeAttackSequence == null ? 0 : activeAttackSequence.activationRange);
+        Gizmos.DrawWireSphere(transform.position, activeAttack == null ? 0 : activeAttack.activationRange);
     }
 }

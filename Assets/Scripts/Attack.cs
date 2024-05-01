@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class AttackSequence
+public class Attack
 {
     public string name;
     public float activationRange;
-    public List<Attack> attacks = new();
+    public List<AttackHit> attacks = new();
 }
 
 [System.Serializable]
-public class Attack
+public class AttackHit
 {
-    [Header("Attack Data")]
-    public AttackType attackType;
+    [Header("Hit Data")]
+    public AttackHitType attackType;
     public float attackScaling;
     [TextArea]
     public string description;
@@ -24,7 +24,7 @@ public class Attack
     public float activeTime;
     public float endTime;
 
-    [Header("Other Attack Data")]
+    [Header("More Hit Data")]
     public float interruptValue;
     public float horizontalSpeed;
     public float verticalSpeed;
@@ -33,7 +33,7 @@ public class Attack
     public GameObject assignedObject;
 }
 
-public enum AttackType
+public enum AttackHitType
 {
     StaticHitbox,
     Projectile,

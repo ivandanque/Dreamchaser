@@ -28,6 +28,7 @@ public class PlayerUnit : MonoBehaviour
 
     private bool isFallen;
 
+    public bool isAttacking = false;
     private bool isRecentlyDamaged;
     private bool isRecentlyInterrupted;
 
@@ -40,6 +41,9 @@ public class PlayerUnit : MonoBehaviour
 
     private void Update()
     {
+        if (isAttacking) return;
+
+        /*
         if (isFallen)
         {
             if (!isRecentlyDamaged)
@@ -53,6 +57,7 @@ public class PlayerUnit : MonoBehaviour
             }
             else interruptMeter = 0;
         }
+        */
     }
 
     public void TakeDamage(float damage)

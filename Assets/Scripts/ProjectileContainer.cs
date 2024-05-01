@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ProjectileContainer : MonoBehaviour
 {
-    public Attack attack;
+    public AttackHit attackHit;
     public float radius;
     private float damage;
 
@@ -22,17 +22,12 @@ public class ProjectileContainer : MonoBehaviour
         }
     }
 
-    public void SetAttack(float damage, Attack attack)
+    public void SetAttack(float damage, float lifetime)
     {
         this.damage = damage;
-        this.attack = attack;
-        SetLifetime();
-    }
-
-    private void SetLifetime()
-    {
+        //this.attackHit = attackHit;
         isAlive = true;
-        lifeTime = attack.activeTime;
+        lifeTime = lifetime;
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -44,8 +39,8 @@ public class ProjectileContainer : MonoBehaviour
             {
                 pu = col.GetComponent<PlayerUnit>();
                 pu.TakeDamage(damage);
-                pu.InterruptPlayer(attack.interruptValue);
-                pu.GetComponent<Rigidbody>().AddForce(-transform.forward * attack.pushbackForce);
+                //pu.InterruptPlayer(attack.interruptValue);
+                //pu.GetComponent<Rigidbody>().AddForce(-transform.forward * attack.pushbackForce);
             }
             Destroy(gameObject);
         }

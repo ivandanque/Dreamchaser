@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Hand
   m_EditorClassIdentifier: Assembly-CSharp::Weapon
   description: '''Tis your hand!'
-  damage: 1
+  baseAttack: 1
   basicAttackStartup: 0.1
   basicAttackTime: 0.4
   basicAttackRecovery: 0.2
@@ -21,4 +21,3 @@ MonoBehaviour:
   basicAttackKnockbackIncrease: 0
   spellInterruptIncrease: 0
   basicAttackStunChance: 0.1
-  hitbox: {fileID: 0}
