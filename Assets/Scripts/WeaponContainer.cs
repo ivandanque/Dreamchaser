@@ -1,8 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WeaponHandler : MonoBehaviour
+public class WeaponContainer : MonoBehaviour
 {
     [Header("Right Hand")]
     public Weapon rightHandWeapon;
@@ -17,6 +18,9 @@ public class WeaponHandler : MonoBehaviour
     public GameObject[] requiredObjects = new GameObject[5];
 
     private PlayerAttackHandler pah;
+
+    public static event Action<PlayerUnit, Weapon, GameObject> OnAttackInit;
+    public static event Action OnBasicAttack;
 
     private void Start()
     {
@@ -33,8 +37,16 @@ public class WeaponHandler : MonoBehaviour
 
     private void CheckInput()
     {
-        if (Input.GetKey(rightHandKey)) pah.WeaponBasicAttack(rightHandWeapon, rightHandObject);
-        if (Input.GetKey(leftHandKey) && leftHandWeapon != null) pah.WeaponBasicAttack(leftHandWeapon, leftHandObject);
+        if (Input.GetKey(rightHandKey))
+        {
+            OnAttackInit?.Invoke(GetComponent<PlayerUnit>(), rightHandWeapon, rightHandObject);
+            OnBasicAttack?.Invoke();
+        }
+        if (Input.GetKey(leftHandKey) && leftHandWeapon != null)
+        {
+            OnAttackInit?.Invoke(GetComponent<PlayerUnit>(), leftHandWeapon, leftHandObject);
+            OnBasicAttack?.Invoke();
+        }
     }
 
     private void SetRightWeapon()

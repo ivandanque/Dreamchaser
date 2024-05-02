@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 
 public class PlayerAttackHandler : MonoBehaviour
@@ -8,23 +10,29 @@ public class PlayerAttackHandler : MonoBehaviour
     private GameObject assignedProjectile;
     private Collider assignedCollider;
 
-    private PlayerUnit pu;
-    private EnemyUnit eu;
     private LayerMask enemyLayer;
     public Transform orientation;
 
+    private PlayerUnit pu;
     private Weapon assignedWeapon;
     private GameObject assignedObject;
+
+    public static event Action<float> OnEnemyHit;
 
     private void Start()
     {
         pu = GetComponent<PlayerUnit>();
     }
 
-    public void WeaponBasicAttack(Weapon weapon, GameObject go)
+    private void InitializeAttack(PlayerUnit pu, Weapon weapon, GameObject go)
     {
+        this.pu = pu;
         assignedWeapon = weapon;
         assignedObject = go;
+    }
+
+    public void WeaponBasicAttack()
+    {
         pu.isAttacking = true;
         if (assignedWeapon.name.Equals("Hand") || assignedWeapon.name.Equals("Blade") || assignedWeapon.name.Equals("Gauntlet")) ActivateHitbox();
         if (assignedWeapon.name.Equals("Scepter") || assignedWeapon.name.Equals("Wand")) ProjectileStartup();
@@ -41,11 +49,7 @@ public class PlayerAttackHandler : MonoBehaviour
     {
         assignedCollider.enabled = true;
         Collider[] cols = Physics.OverlapBox(assignedCollider.bounds.center, assignedCollider.bounds.extents, Quaternion.identity, enemyLayer);
-        for (int i = 0; i < cols.Length; i++)
-        {
-            eu = cols[i].GetComponent<EnemyUnit>();
-            eu.TakeDamage(Random.value <= pu.critChance ? assignedWeapon.baseAttack * pu.critMultiplier : assignedWeapon.baseAttack);
-        }
+        for (int i = 0; i < cols.Length; i++) OnEnemyHit?.Invoke(CalculateDamage());
         Invoke(nameof(DeactivateHitbox), assignedWeapon.basicAttackTime);
     }
 
@@ -63,8 +67,16 @@ public class PlayerAttackHandler : MonoBehaviour
     private void FireProjectile()
     {
         assignedProjectile = Instantiate(assignedObject, pu.transform.position, Quaternion.identity);
-        assignedProjectile.GetComponent<ProjectileContainer>().SetAttack(Random.value <= pu.critChance ? assignedWeapon.baseAttack * pu.critMultiplier : assignedWeapon.baseAttack, assignedWeapon.basicAttackTime);
+        assignedProjectile.GetComponent<ProjectileContainer>().SetAttack(CalculateDamage(), assignedWeapon.basicAttackTime);
         assignedProjectile.GetComponent<Rigidbody>().AddForce(orientation.forward * 1000, ForceMode.Impulse);
         pu.isAttacking = false;
     }
+
+    private float CalculateDamage()
+    {
+        if (UnityEngine.Random.value <= pu.critChance) return assignedWeapon.baseAttack * pu.critMultiplier;
+        return assignedWeapon.baseAttack;
+    }
+
+
 }

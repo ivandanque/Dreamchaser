@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
@@ -39,6 +40,11 @@ public class EnemyUnit : MonoBehaviour
     public bool isAttacking;
     public bool isLockedOn;
     private bool isMoving;
+
+    public static event Action<EnemyUnit, AttackHit> OnHit;
+    public static event Action OnHitboxHit;
+    public static event Action OnProjectileHit;
+    public static event Action OnCollisionHit;
 
     private void Start()
     {
@@ -85,19 +91,17 @@ public class EnemyUnit : MonoBehaviour
 
         foreach (AttackHit hit in attack.attacks)
         {
-            EAH.attackHit = hit;
+            OnHit?.Invoke(this, hit);
             switch (hit.attackType)
             {
                 case AttackHitType.StaticHitbox:
-                    EAH.StaticHitboxHit();
+                    OnHitboxHit?.Invoke();
                     break;
                 case AttackHitType.Projectile:
-                    EAH.ProjectileHit();
+                    OnProjectileHit?.Invoke();
                     break;
                 case AttackHitType.Collision:
-                    EAH.CollisionHit();
-                    break;
-                default: 
+                    OnCollisionHit?.Invoke();
                     break;
             }
         }
@@ -128,5 +132,15 @@ public class EnemyUnit : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, safeRange);
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, activeAttack == null ? 0 : activeAttack.activationRange);
+    }
+
+    private void OnEnable()
+    {
+        PlayerAttackHandler.OnEnemyHit += TakeDamage;
+    }
+
+    private void OnDisable()
+    {
+        PlayerAttackHandler.OnEnemyHit -= TakeDamage;
     }
 }

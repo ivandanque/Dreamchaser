@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,8 +11,11 @@ public class ProjectileContainer : MonoBehaviour
 
     private float lifeTime;
     public LayerMask playerLayer;
-    private PlayerUnit pu;
+    public LayerMask enemyLayer;
     private bool isAlive = false;
+
+    public static event Action<float> OnPlayerHit;
+    public static event Action<float> OnEnemyHit;
 
     private void Update()
     {
@@ -25,7 +29,6 @@ public class ProjectileContainer : MonoBehaviour
     public void SetAttack(float damage, float lifetime)
     {
         this.damage = damage;
-        //this.attackHit = attackHit;
         isAlive = true;
         lifeTime = lifetime;
     }
@@ -35,13 +38,14 @@ public class ProjectileContainer : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             Collider[] cols = Physics.OverlapSphere(transform.position, radius, playerLayer);
-            foreach (Collider col in cols)
-            {
-                pu = col.GetComponent<PlayerUnit>();
-                pu.TakeDamage(damage);
-                //pu.InterruptPlayer(attack.interruptValue);
-                //pu.GetComponent<Rigidbody>().AddForce(-transform.forward * attack.pushbackForce);
-            }
+            for (int i = 0; i < cols.Length; i++) OnPlayerHit?.Invoke(damage);
+            Destroy(gameObject);
+        }
+
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            Collider[] cols = Physics.OverlapSphere(transform.position, radius, enemyLayer);
+            for (int i = 0; i < cols.Length; i++) OnEnemyHit?.Invoke(damage);
             Destroy(gameObject);
         }
     }

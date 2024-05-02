@@ -4,15 +4,11 @@ using UnityEngine;
 
 public class SpellHandler : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public Spell[] RightHandSpells = new Spell[2];
+    public Spell[] LeftHandSpells = new Spell[2];
+}
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+public class Spell
+{ 
+
 }

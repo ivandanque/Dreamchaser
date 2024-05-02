@@ -106,4 +106,14 @@ public class PlayerUnit : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, ActiveAttack == null ? 0 : ActiveAttack.Range);
     }
     */
+
+    private void OnEnable()
+    {
+        EnemyAttackHandler.OnPlayerHit += TakeDamage;
+    }
+
+    private void OnDisable()
+    {
+        EnemyAttackHandler.OnPlayerHit -= TakeDamage;
+    }
 }

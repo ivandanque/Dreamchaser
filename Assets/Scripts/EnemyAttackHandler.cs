@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -9,35 +11,19 @@ public class EnemyAttackHandler : MonoBehaviour
     private Collider assignedCollider;
 
     private PlayerUnit pu;
-    private EnemyUnit eu;
 
     private bool hasCollidedWithPlayer = false;
 
-    public Transform orientation;
-    public AttackHit attackHit;
-    public GameObject assignedObject;
+    private EnemyUnit eu;
+    private AttackHit attackHit;
+    private GameObject assignedObject;
 
-    private void Start()
-    {
-        eu = GetComponent<EnemyUnit>();
-    }
+    public static event Action<float> OnPlayerHit;
 
-    public void StaticHitboxHit()
+    private void InitializeAttack(EnemyUnit eu, AttackHit attackHit)
     {
-        eu.isAttacking = true;
-        InitializeHitbox();
-    }
-
-    public void ProjectileHit()
-    {
-        eu.isAttacking = true;
-        ProjectileStartup();
-    }
-
-    public void CollisionHit()
-    {
-        eu.isAttacking = true;
-        InitializeCollider();
+        this.eu = eu;
+        this.attackHit = attackHit;
     }
 
     private void InitializeHitbox()
@@ -99,8 +85,7 @@ public class EnemyAttackHandler : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             hasCollidedWithPlayer = true;
-            pu = collision.gameObject.GetComponent<PlayerUnit>();
-            pu.TakeDamage(CalculateDamage());
+            OnPlayerHit?.Invoke(CalculateDamage());
             //pu.InterruptPlayer(attackHit.interruptValue);
             //pu.GetComponent<Rigidbody>().AddForce(-orientation.forward * attackHit.pushbackForce, ForceMode.Impulse);
             RecoverFromRamming();
@@ -122,7 +107,23 @@ public class EnemyAttackHandler : MonoBehaviour
     private float CalculateDamage()
     {
         float baseDamage = eu.attack * attackHit.attackScaling;
-        if (Random.value <= eu.critChance) return baseDamage * eu.critMultiplier;
+        if (UnityEngine.Random.value <= eu.critChance) return baseDamage * eu.critMultiplier;
         return baseDamage;
+    }
+
+    private void OnEnable()
+    {
+        EnemyUnit.OnHit += InitializeAttack;
+        EnemyUnit.OnHitboxHit += InitializeHitbox;
+        EnemyUnit.OnProjectileHit += ProjectileStartup;
+        EnemyUnit.OnCollisionHit += InitializeCollider;
+    }
+
+    private void OnDisable()
+    {
+        EnemyUnit.OnHit -= InitializeAttack;
+        EnemyUnit.OnHitboxHit -= InitializeHitbox;
+        EnemyUnit.OnProjectileHit -= ProjectileStartup;
+        EnemyUnit.OnCollisionHit -= InitializeCollider;
     }
 }
