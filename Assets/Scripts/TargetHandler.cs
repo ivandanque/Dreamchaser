@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,7 +6,7 @@ using UnityEngine;
 public class TargetHandler : MonoBehaviour
 {
     public Camera thirdPersonCamera;
-    public Transform orientation;
+    public Transform cameraOrientation;
     public float maxTargetingAngle;
     public float targetingRange;
     public LayerMask enemyLayer;
@@ -15,6 +16,9 @@ public class TargetHandler : MonoBehaviour
     private GameObject enemy;
     private List<GameObject> validTargets = new();
     private GameObject closestTarget;
+    private Transform cameraFlat;
+
+    public static event Action<GameObject> OnTargetAcquired;
 
     private void Start()
     {
@@ -34,7 +38,8 @@ public class TargetHandler : MonoBehaviour
 
         if (validTargets.Count > 0)
         {
-            pu.targetedEnemy = FindClosestTarget();
+            FindClosestTarget();
+            OnTargetAcquired?.Invoke(closestTarget);
             ShowTargetCursor();
         }
         else HideTargetCursor();
@@ -42,11 +47,13 @@ public class TargetHandler : MonoBehaviour
 
     private bool IsEnemyInView(Transform enemy)
     {
-        if (Vector3.Angle(enemy.position - transform.position, orientation.forward) < maxTargetingAngle) return true;
+        cameraFlat = cameraOrientation;
+        cameraFlat.position = new Vector3(cameraOrientation.position.x, transform.position.y, cameraOrientation.position.z);
+        if (Vector3.Angle(enemy.position - cameraFlat.position, cameraFlat.forward) < maxTargetingAngle) return true;
         else return false;
     }
 
-    private Transform FindClosestTarget()
+    private void FindClosestTarget()
     {
         float closestDistance = 0;
         closestTarget = null;
@@ -70,7 +77,6 @@ public class TargetHandler : MonoBehaviour
                 }
             }    
         }
-        return closestTarget.transform;
     }
 
     private void ShowTargetCursor()

@@ -28,14 +28,14 @@ public class AttackHit
     public float interruptValue;
     public float horizontalSpeed;
     public float verticalSpeed;
-    public float pushbackForce;
+    public float movementSpeed;
 
     public GameObject assignedObject;
 }
 
 public enum AttackHitType
 {
-    StaticHitbox,
-    Projectile,
-    Collision
+    Hitbox,
+    Hitsphere,
+    Projectile
 }

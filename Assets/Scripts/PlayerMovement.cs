@@ -7,55 +7,45 @@ using static PlayerController;
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement")]
-    public float MoveSpeed;
-    public float WalkSpeed;
-    public float SprintMultiplier;
-    public Transform Orientation;
-    public Rigidbody Rb;
-    Vector3 MoveDirection;
+    private float moveSpeed;
+    public float walkSpeed;
+    public float sprintMultiplier;
+    public Transform orientation;
+    public Rigidbody rb;
+    Vector3 moveDirection;
 
     [Header("Ground Settings")]
-    public float PlayerHeight;
-    public LayerMask Ground;
-    public float GroundDrag;
-    public bool IsGrounded;
+    public float playerHeight;
+    public LayerMask ground;
+    public float groundDrag;
+    public bool isGrounded;
 
     [Header("Jump Settings")]
-    public float JumpForce;
-    public float JumpCooldown;
-    public float AirMultiplier;
-    public float CoyoteTime;
-    private float CoyoteTimeCtr;
-    public float JumpBufferTime;
-    private float JumpBufferCtr;
-    private bool ReadyToJump = true;
+    public float jumpForce;
+    public float jumpCooldown;
+    public float airMultiplier;
+    public float coyoteTime;
+    private float coyoteTimeCtr;
+    public float jumpBufferTime;
+    private float jumpBufferCtr;
+    private bool readyToJump = true;
 
     [Header("Dash Settings")]
-    public float DashSpeed;
-    public float DashSpeedChangeFactor;
-    [HideInInspector] public float MaxYSpeed;
-    public bool IsDashing;
+    public float dashSpeed;
+    public float dashSpeedChangeFactor;
+    [HideInInspector] public float maxYSpeed;
+    public bool isDashing;
+    public bool isAttacking;
 
     private enum MovementState
     {
         Walking,
         Sprinting,
         Dashing,
-        Airborne
+        Airborne,
+        Attacking
     }
     private MovementState State;
-    public enum StatusEffect
-    {
-        Fallen,
-        Airborne,
-        Stunned,
-        Burning,
-        Slowed,
-        Rooted,
-        Wounded
-    }
-
-    public StatusEffect PlayerStatus;
 
     private void Start()
     {
@@ -65,67 +55,75 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         //Ground Check
-        IsGrounded = Physics.Raycast(transform.position, Vector3.down, PlayerHeight * 0.5f + 0.1f, Ground);
+        isGrounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.1f, ground);
 
         MovePlayer();
         SpeedControl();
         StateHandler();
 
         //Drag Handler
-        if (IsGrounded) Rb.drag = GroundDrag;
-        else Rb.drag = 0;
+        if (isGrounded) rb.drag = groundDrag;
+        else rb.drag = 0;
     }
 
     private void MovePlayer()
     {
         //Coyote Time
-        if (IsGrounded) CoyoteTimeCtr = CoyoteTime;
-        else CoyoteTimeCtr -= Time.deltaTime;
+        if (isGrounded) coyoteTimeCtr = coyoteTime;
+        else coyoteTimeCtr -= Time.deltaTime;
 
         //Jump Buffer
-        if (Input.GetKeyDown(KeyCode.Space)) JumpBufferCtr = JumpBufferTime;
+        if (Input.GetKeyDown(KeyCode.Space)) jumpBufferCtr = jumpBufferTime;
+        else jumpBufferCtr -= Time.deltaTime;
 
-            
-        else JumpBufferCtr -= Time.deltaTime;
+        if (State == MovementState.Dashing || State == MovementState.Attacking) return; //Don't move while dashing or attacking
 
-        if (State == MovementState.Dashing) return;
+        moveDirection = orientation.forward * Input.GetAxisRaw("Vertical") + orientation.right * Input.GetAxisRaw("Horizontal");
+        if (isGrounded) rb.AddForce(10f * moveSpeed * moveDirection.normalized, ForceMode.Force);
+        else if (!isGrounded) rb.AddForce(10f * airMultiplier * moveSpeed * moveDirection.normalized, ForceMode.Force);
 
-        MoveDirection = Orientation.forward * Input.GetAxisRaw("Vertical") + Orientation.right * Input.GetAxisRaw("Horizontal");
-        if (IsGrounded) Rb.AddForce(10f * MoveSpeed * MoveDirection.normalized, ForceMode.Force);
-        else if (!IsGrounded) Rb.AddForce(10f * AirMultiplier * MoveSpeed * MoveDirection.normalized, ForceMode.Force);
-
-        if (JumpBufferCtr > 0f && ReadyToJump && CoyoteTimeCtr > 0f)
+        if (jumpBufferCtr > 0f && readyToJump && coyoteTimeCtr > 0f)
         {
-            ReadyToJump = false;
-            CoyoteTimeCtr = 0f;
-            JumpBufferCtr = 0f;
+            readyToJump = false;
+            coyoteTimeCtr = 0f;
+            jumpBufferCtr = 0f;
             Jump();
-            Invoke(nameof(ResetJump), JumpCooldown);
+            Invoke(nameof(ResetJump), jumpCooldown);
         }
     }
 
     private void SpeedControl()
     {
-        Vector3 FlatVel = new Vector3(Rb.velocity.x, 0f, Rb.velocity.z);
+        Vector3 FlatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
 
-        if (FlatVel.magnitude > MoveSpeed)
+        if (FlatVel.magnitude > moveSpeed)
         {
-            Vector3 CappedVel = FlatVel.normalized * MoveSpeed;
-            Rb.velocity = new Vector3(CappedVel.x, Rb.velocity.y, CappedVel.z);
+            Vector3 CappedVel = FlatVel.normalized * moveSpeed;
+            rb.velocity = new Vector3(CappedVel.x, rb.velocity.y, CappedVel.z);
         }
 
-        if (MaxYSpeed != 0 && Rb.velocity.y > MaxYSpeed) Rb.velocity = new Vector3(Rb.velocity.x, MaxYSpeed, Rb.velocity.z);
+        if (maxYSpeed != 0 && rb.velocity.y > maxYSpeed) rb.velocity = new Vector3(rb.velocity.x, maxYSpeed, rb.velocity.z);
     }
 
     private void Jump()
     {
-        Rb.velocity = new Vector3(Rb.velocity.x, 0f, Rb.velocity.z);
-        Rb.AddForce(transform.up * JumpForce, ForceMode.Impulse);
+        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+        rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
     }
 
     private void ResetJump()
     {
-        ReadyToJump = true;
+        readyToJump = true;
+    }
+
+    private void Attack()
+    {
+        isAttacking = true;
+    }
+
+    private void NotAttack()
+    {
+        isAttacking = false;
     }
 
     private float DesiredMoveSpeed;
@@ -135,27 +133,32 @@ public class PlayerMovement : MonoBehaviour
 
     private void StateHandler()
     {
-        if (IsDashing)
+        if (isAttacking)
+        {
+            State = MovementState.Attacking;
+            DesiredMoveSpeed = 0;
+        }
+        else if (isDashing)
         {
             State = MovementState.Dashing;
-            DesiredMoveSpeed = DashSpeed;
-            SpeedChangeFactor = DashSpeedChangeFactor;
+            DesiredMoveSpeed = dashSpeed;
+            SpeedChangeFactor = dashSpeedChangeFactor;
         }
-        else if (IsGrounded && Input.GetKey(KeyCode.LeftShift))
+        else if (isGrounded && Input.GetKey(KeyCode.LeftShift))
         {
             State = MovementState.Sprinting;
-            DesiredMoveSpeed = WalkSpeed * SprintMultiplier;
+            DesiredMoveSpeed = walkSpeed * sprintMultiplier;
         }
-        else if (IsGrounded)
+        else if (isGrounded)
         {
             State = MovementState.Walking;
-            DesiredMoveSpeed = WalkSpeed;
+            DesiredMoveSpeed = walkSpeed;
         }
         else
         {
             State = MovementState.Airborne;
-            if (DesiredMoveSpeed < (WalkSpeed * SprintMultiplier)) DesiredMoveSpeed = WalkSpeed;
-            else DesiredMoveSpeed = WalkSpeed * SprintMultiplier;
+            if (DesiredMoveSpeed < (walkSpeed * sprintMultiplier)) DesiredMoveSpeed = walkSpeed;
+            else DesiredMoveSpeed = walkSpeed * sprintMultiplier;
         }
 
         bool DesiredMoveSpeedHasChanged = DesiredMoveSpeed != LastDesiredMoveSpeed;
@@ -170,7 +173,7 @@ public class PlayerMovement : MonoBehaviour
             else
             {
                 StopAllCoroutines();
-                MoveSpeed = DesiredMoveSpeed;
+                moveSpeed = DesiredMoveSpeed;
             }
         }
 
@@ -183,22 +186,34 @@ public class PlayerMovement : MonoBehaviour
     {
         // smoothly lerp movementSpeed to desired value
         float time = 0;
-        float difference = Mathf.Abs(DesiredMoveSpeed - MoveSpeed);
-        float startValue = MoveSpeed;
+        float difference = Mathf.Abs(DesiredMoveSpeed - moveSpeed);
+        float startValue = moveSpeed;
 
         float boostFactor = SpeedChangeFactor;
 
         while (time < difference)
         {
-            MoveSpeed = Mathf.Lerp(startValue, DesiredMoveSpeed, time / difference);
+            moveSpeed = Mathf.Lerp(startValue, DesiredMoveSpeed, time / difference);
 
             time += Time.deltaTime * boostFactor;
 
             yield return null;
         }
 
-        MoveSpeed = DesiredMoveSpeed;
+        moveSpeed = DesiredMoveSpeed;
         SpeedChangeFactor = 1f;
         KeepMomentum = false;
+    }
+
+    private void OnEnable()
+    {
+        PlayerAttackHandler.OnPlayerAttackStart += Attack;
+        PlayerAttackHandler.OnPlayerAttackEnd += NotAttack;
+    }
+
+    private void OnDisable()
+    {
+        PlayerAttackHandler.OnPlayerAttackStart -= Attack;
+        PlayerAttackHandler.OnPlayerAttackEnd -= NotAttack;
     }
 }

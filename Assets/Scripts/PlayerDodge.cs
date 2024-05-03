@@ -39,7 +39,7 @@ public class PlayerDodge : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.LeftControl)) DashBufferCtr = DashBufferTime;
         else DashBufferCtr -= Time.deltaTime;
 
-        if (DashBufferCtr > 0f && PM.IsGrounded)
+        if (DashBufferCtr > 0f && PM.isGrounded)
         {
             DashBufferCtr = 0f;
             Dash();
@@ -53,8 +53,8 @@ public class PlayerDodge : MonoBehaviour
         if (DashCooldownTimer > 0) return;
         else DashCooldownTimer = DashCooldown;
 
-        PM.IsDashing = true;
-        PM.MaxYSpeed = DashUpwardSpeedCap;
+        PM.isDashing = true;
+        PM.maxYSpeed = DashUpwardSpeedCap;
 
         Transform ForwardT;
         if (UseCameraForward) ForwardT = PlayerCamera;
@@ -77,8 +77,8 @@ public class PlayerDodge : MonoBehaviour
 
     private void ResetDash()
     {
-        PM.IsDashing = false;
-        PM.MaxYSpeed = 0;
+        PM.isDashing = false;
+        PM.maxYSpeed = 0;
         if (DisableGravity) Rb.useGravity = true;
     }
 

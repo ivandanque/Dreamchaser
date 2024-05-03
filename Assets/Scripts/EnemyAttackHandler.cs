@@ -65,40 +65,6 @@ public class EnemyAttackHandler : MonoBehaviour
         Invoke(nameof(EndAttack), attackHit.endTime);
     }
 
-    private void InitializeCollider()
-    {
-        assignedCollider = attackHit.assignedObject.GetComponent<Collider>();
-        eu.isLockedOn = true;
-        Invoke(nameof(RamIntoPlayer), attackHit.startTime);
-    }
-
-    private void RamIntoPlayer()
-    {
-        eu.isLockedOn = false;
-        eu.agent.speed = attackHit.horizontalSpeed;
-        eu.agent.SetDestination(eu.player.position);
-        if (!hasCollidedWithPlayer) Invoke(nameof(RecoverFromRamming), attackHit.activeTime);
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            hasCollidedWithPlayer = true;
-            OnPlayerHit?.Invoke(CalculateDamage());
-            //pu.InterruptPlayer(attackHit.interruptValue);
-            //pu.GetComponent<Rigidbody>().AddForce(-orientation.forward * attackHit.pushbackForce, ForceMode.Impulse);
-            RecoverFromRamming();
-        }
-    }
-
-    private void RecoverFromRamming()
-    {
-        hasCollidedWithPlayer = false;
-        eu.agent.SetDestination(eu.transform.position);
-        Invoke(nameof(EndAttack), attackHit.endTime);
-    }
-
     private void EndAttack()
     {
         eu.isAttacking = false;
@@ -116,7 +82,6 @@ public class EnemyAttackHandler : MonoBehaviour
         EnemyUnit.OnHit += InitializeAttack;
         EnemyUnit.OnHitboxHit += InitializeHitbox;
         EnemyUnit.OnProjectileHit += ProjectileStartup;
-        EnemyUnit.OnCollisionHit += InitializeCollider;
     }
 
     private void OnDisable()
@@ -124,6 +89,5 @@ public class EnemyAttackHandler : MonoBehaviour
         EnemyUnit.OnHit -= InitializeAttack;
         EnemyUnit.OnHitboxHit -= InitializeHitbox;
         EnemyUnit.OnProjectileHit -= ProjectileStartup;
-        EnemyUnit.OnCollisionHit -= InitializeCollider;
     }
 }

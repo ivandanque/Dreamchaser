@@ -1,0 +1,45 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Loadout : MonoBehaviour
+{
+    [Header("Right Hand")]
+    public Weapon rightHandWeapon;
+    public Spell rightHandSpell1;
+    public Spell rightHandSpell2;
+
+    [Header("Left Hand")]
+    public Weapon leftHandWeapon;
+    public Spell leftHandSpell1;
+    public Spell leftHandSpell2;
+
+    public static event Action<PlayerUnit, Weapon, GameObject> OnAttackInit;
+    public static event Action<Weapon> OnBasicAttackStart;
+    public static event Action<Weapon, Spell> OnSpellStart;
+
+    private void Start()
+    {
+        
+    }
+
+    private void Update()
+    {
+        CheckInput();
+    }
+
+    private void CheckInput()
+    {
+        if (Input.GetKeyDown(KeyCode.Mouse0)) OnBasicAttackStart?.Invoke(rightHandWeapon);
+        if (Input.GetKeyDown(KeyCode.Mouse1) && leftHandWeapon != null) OnBasicAttackStart?.Invoke(leftHandWeapon);
+
+        if (leftHandWeapon != null)
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha1)) OnSpellStart?.Invoke(leftHandWeapon, leftHandSpell1);
+            if (Input.GetKeyDown(KeyCode.Q)) OnSpellStart?.Invoke(leftHandWeapon, leftHandSpell2);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3)) OnSpellStart?.Invoke(rightHandWeapon, rightHandSpell1);
+        if (Input.GetKeyDown(KeyCode.E)) OnSpellStart?.Invoke(rightHandWeapon, rightHandSpell1);
+    }
+}

@@ -44,7 +44,6 @@ public class EnemyUnit : MonoBehaviour
     public static event Action<EnemyUnit, AttackHit> OnHit;
     public static event Action OnHitboxHit;
     public static event Action OnProjectileHit;
-    public static event Action OnCollisionHit;
 
     private void Start()
     {
@@ -94,14 +93,11 @@ public class EnemyUnit : MonoBehaviour
             OnHit?.Invoke(this, hit);
             switch (hit.attackType)
             {
-                case AttackHitType.StaticHitbox:
+                case AttackHitType.Hitbox:
                     OnHitboxHit?.Invoke();
                     break;
                 case AttackHitType.Projectile:
                     OnProjectileHit?.Invoke();
-                    break;
-                case AttackHitType.Collision:
-                    OnCollisionHit?.Invoke();
                     break;
             }
         }
@@ -117,6 +113,7 @@ public class EnemyUnit : MonoBehaviour
     public void TakeDamage(float damage)
     {
         health -= damage * DefenseMultiplier();
+        Debug.Log(string.Format("I, {0}, took {1} damage!", name, damage));
     }
 
     private float DefenseMultiplier()
@@ -136,11 +133,11 @@ public class EnemyUnit : MonoBehaviour
 
     private void OnEnable()
     {
-        PlayerAttackHandler.OnEnemyHit += TakeDamage;
+       
     }
 
     private void OnDisable()
     {
-        PlayerAttackHandler.OnEnemyHit -= TakeDamage;
+        
     }
 }

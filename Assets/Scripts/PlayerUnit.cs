@@ -12,15 +12,8 @@ public class PlayerUnit : MonoBehaviour
     [Header("Stats")]
     public new string name;
     public float maxHealth;
-    public float attack;
     public float defense;
     private float defenseFactor;
-    public float critChance;
-    public float critMultiplier;
-
-    public float damageInterruptionInterval;
-    public float interruptMeterMax;
-    private float interruptMeter;
 
     private float currentHealth;
 
@@ -30,7 +23,6 @@ public class PlayerUnit : MonoBehaviour
 
     public bool isAttacking = false;
     private bool isRecentlyDamaged;
-    private bool isRecentlyInterrupted;
 
     private void Start()
     {
@@ -42,22 +34,6 @@ public class PlayerUnit : MonoBehaviour
     private void Update()
     {
         if (isAttacking) return;
-
-        /*
-        if (isFallen)
-        {
-            if (!isRecentlyDamaged)
-            {
-                interruptMeter += Time.deltaTime / 3;
-                if (interruptMeter >= interruptMeterMax)
-                {
-                    isFallen = false;
-                    interruptMeter = interruptMeterMax;
-                }
-            }
-            else interruptMeter = 0;
-        }
-        */
     }
 
     public void TakeDamage(float damage)
@@ -65,29 +41,6 @@ public class PlayerUnit : MonoBehaviour
         isRecentlyDamaged = true;
         currentHealth -= damage * DefenseMultiplier();
         healthBar.SetHealth(currentHealth);
-        Invoke(nameof(ResetDamageInterrupt), damageInterruptionInterval);
-    }
-
-    public float DealDamage()
-    {
-        if (Random.value <= critChance) return attack * critMultiplier;
-        return attack;
-    }
-
-    public void InterruptPlayer(float interruptValue)
-    {
-        interruptMeter -= interruptValue;
-        if (interruptMeter <= 0 && !isFallen)
-        {
-            isFallen = true;
-            PM.PlayerStatus = PlayerMovement.StatusEffect.Fallen;
-            interruptMeter = 0;
-        }
-    }
-
-    private void ResetDamageInterrupt()
-    {
-        isRecentlyDamaged = false;
     }
 
     private float DefenseMultiplier()
