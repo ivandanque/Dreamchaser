@@ -14,9 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   description: 
   attackScaling: 0
-  spellTime: 0
-  spellType: 0
+  spellCastTime: 1
+  spellDuration: 5
+  spellType: 4
   spellWidth: 0
   spellHeight: 0
   spellLength: 0
-  spellRadius: 0
+  spellRadius: 10
+  vfxPrefab: {fileID: 3418480947212483570, guid: 2fdcc1888b5bed346a29165eca9c893c,
+    type: 3}

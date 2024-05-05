@@ -13,10 +13,13 @@ MonoBehaviour:
   m_Name: Vine Lash
   m_EditorClassIdentifier: 
   description: 
-  attackScaling: 0
-  spellTime: 0
+  attackScaling: 2
+  spellCastTime: 1
+  spellDuration: 3
   spellType: 0
   spellWidth: 0
   spellHeight: 0
-  spellLength: 0
+  spellLength: 20
   spellRadius: 0
+  vfxPrefab: {fileID: 7925437153155648892, guid: 35f37130d0df66544a25530a68a1d07b,
+    type: 3}

@@ -8,7 +8,8 @@ public class Spell : ScriptableObject
     [TextArea] public string description;
 
     public float attackScaling;
-    public float spellTime;
+    public float spellCastTime;
+    public float spellDuration;
 
     public AttackHitType spellType;
     public float spellWidth;

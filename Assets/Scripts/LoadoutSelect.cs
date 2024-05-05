@@ -41,10 +41,6 @@ public class LoadoutSelect : MonoBehaviour
             if (!isScreenUp)
             {
                 loadoutPanel.SetActive(true);
-                lhs1Dropdown.captionText.text = "--";
-                lhs2Dropdown.captionText.text = "--";
-                rhs1Dropdown.captionText.text = "--";
-                rhs2Dropdown.captionText.text = "--";
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
                 Time.timeScale = 0f;

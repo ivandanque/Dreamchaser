@@ -13,10 +13,13 @@ MonoBehaviour:
   m_Name: Roasted
   m_EditorClassIdentifier: 
   description: 
-  attackScaling: 0
-  spellTime: 0
+  attackScaling: 1.5
+  spellCastTime: 1
+  spellDuration: 0
   spellType: 0
-  spellWidth: 0
-  spellHeight: 0
-  spellLength: 0
+  spellWidth: 2
+  spellHeight: 2
+  spellLength: 10
   spellRadius: 0
+  vfxPrefab: {fileID: 8322078599809045745, guid: 795ddd43a253fff49ada1d21ad8cb0fd,
+    type: 3}

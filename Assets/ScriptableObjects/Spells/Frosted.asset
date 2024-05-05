@@ -13,10 +13,13 @@ MonoBehaviour:
   m_Name: Frosted
   m_EditorClassIdentifier: 
   description: 
-  attackScaling: 0
-  spellTime: 0
+  attackScaling: 1
+  spellCastTime: 1
+  spellDuration: 0
   spellType: 0
-  spellWidth: 0
-  spellHeight: 0
-  spellLength: 0
+  spellWidth: 2
+  spellHeight: 2
+  spellLength: 10
   spellRadius: 0
+  vfxPrefab: {fileID: 8049733212492403375, guid: a944ff8a21b04384e913ece520264755,
+    type: 3}

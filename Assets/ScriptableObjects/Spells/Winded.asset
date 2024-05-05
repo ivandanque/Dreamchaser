@@ -13,10 +13,13 @@ MonoBehaviour:
   m_Name: Winded
   m_EditorClassIdentifier: 
   description: 
-  attackScaling: 0
-  spellTime: 0
-  spellType: 0
+  attackScaling: 1
+  spellCastTime: 1
+  spellDuration: 0
+  spellType: 2
   spellWidth: 0
   spellHeight: 0
-  spellLength: 0
+  spellLength: 10
   spellRadius: 0
+  vfxPrefab: {fileID: 4967710324141850661, guid: c2b665a79884eeb478c11dd99f6bde9a,
+    type: 3}

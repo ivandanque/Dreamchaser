@@ -37,6 +37,7 @@ public enum AttackHitType
 {
     Hitbox,
     Hitsphere,
-    Point,
-    Projectile
+    Hitscan,
+    Projectile,
+    TargetArea
 }

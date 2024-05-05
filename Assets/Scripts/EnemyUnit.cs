@@ -114,7 +114,7 @@ public class EnemyUnit : MonoBehaviour
     {
         health -= damage * DefenseMultiplier();
         Debug.Log(string.Format("I, {0}, took {1} damage!", name, damage));
-        if (health <= 0) Destroy(this.gameObject);
+        if (health <= 0) Destroy(this.gameObject, 1);
     }
 
     private float DefenseMultiplier()

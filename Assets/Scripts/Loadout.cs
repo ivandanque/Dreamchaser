@@ -15,7 +15,6 @@ public class Loadout : MonoBehaviour
     public Spell leftHandSpell1;
     public Spell leftHandSpell2;
 
-    public static event Action<PlayerUnit, Weapon, GameObject> OnAttackInit;
     public static event Action<Weapon> OnBasicAttackStart;
     public static event Action<Weapon, Spell> OnSpellStart;
 
@@ -32,15 +31,12 @@ public class Loadout : MonoBehaviour
     private void CheckInput()
     {
         if (Input.GetKeyDown(KeyCode.Mouse0)) OnBasicAttackStart?.Invoke(rightHandWeapon);
-        if (Input.GetKeyDown(KeyCode.Mouse1) && leftHandWeapon != null) OnBasicAttackStart?.Invoke(leftHandWeapon);
+        if (Input.GetKeyDown(KeyCode.Mouse1)) OnBasicAttackStart?.Invoke(leftHandWeapon);
 
-        if (leftHandWeapon != null)
-        {
-            if (Input.GetKeyDown(KeyCode.Alpha1)) OnSpellStart?.Invoke(leftHandWeapon, leftHandSpell1);
-            if (Input.GetKeyDown(KeyCode.Q)) OnSpellStart?.Invoke(leftHandWeapon, leftHandSpell2);
-        }
+        if (Input.GetKeyDown(KeyCode.Alpha1)) OnSpellStart?.Invoke(leftHandWeapon, leftHandSpell1);
+        if (Input.GetKeyDown(KeyCode.Q)) OnSpellStart?.Invoke(leftHandWeapon, leftHandSpell2);
         if (Input.GetKeyDown(KeyCode.Alpha3)) OnSpellStart?.Invoke(rightHandWeapon, rightHandSpell1);
-        if (Input.GetKeyDown(KeyCode.E)) OnSpellStart?.Invoke(rightHandWeapon, rightHandSpell1);
+        if (Input.GetKeyDown(KeyCode.E)) OnSpellStart?.Invoke(rightHandWeapon, rightHandSpell2);
     }
 
     private void SetLoadout(LoadoutSelect ls)

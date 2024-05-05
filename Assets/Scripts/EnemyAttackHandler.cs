@@ -40,20 +40,17 @@ public class EnemyAttackHandler : MonoBehaviour
 
     private void ActivateHitbox()
     {
-        assignedCollider.enabled = true;
         Collider[] col = Physics.OverlapBox(assignedCollider.bounds.center, assignedCollider.bounds.extents, assignedCollider.transform.rotation, eu.playerLayer);
         foreach (Collider cold in col)
         {
             pu = cold.GetComponent<PlayerUnit>();
-            pu.TakeDamage(CalculateDamage());
-            //pu.InterruptPlayer(attackHit.interruptValue);
+            if (pu != null) pu.TakeDamage(CalculateDamage());
         }
         Invoke(nameof(DeactivateHitbox), attackHit.activeTime);
     }
 
     private void DeactivateHitbox()
     {
-        assignedCollider.enabled = false;
         Invoke(nameof(EndAttack), attackHit.endTime);
     }
 

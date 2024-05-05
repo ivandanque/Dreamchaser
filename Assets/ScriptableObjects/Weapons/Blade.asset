@@ -15,8 +15,9 @@ MonoBehaviour:
   description: 
   baseAttack: 20
   basicAttackTime: 1.2
-  attackHitType: 1
-  basicAttackLength: 0
-  basicAttackWidth: 0
-  basicAttackHeight: 0
-  basicAttackRadius: 5
+  attackHitType: 0
+  basicAttackLength: 2
+  basicAttackWidth: 2
+  basicAttackHeight: 2
+  basicAttackRadius: 0
+  vfxPrefab: {fileID: 0}
