@@ -14,9 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   description: 
   baseAttack: 20
-  basicAttackTime: 1.5
-  attackHitType: 1
-  basicAttackLength: 0
+  basicAttackTime: 1
+  attackHitType: 2
+  basicAttackLength: 15
   basicAttackWidth: 0
   basicAttackHeight: 0
-  basicAttackRadius: 1
+  basicAttackRadius: 0
+  vfxPrefab: {fileID: 4251401700750793589, guid: 82b8cdc438d4a1247a6ef4d339f56c00,
+    type: 3}

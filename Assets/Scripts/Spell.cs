@@ -15,4 +15,6 @@ public class Spell : ScriptableObject
     public float spellHeight;
     public float spellLength;
     public float spellRadius;
+
+    public GameObject vfxPrefab;
 }

@@ -26,7 +26,7 @@ public class Loadout : MonoBehaviour
 
     private void Update()
     {
-        CheckInput();
+        if (Time.timeScale != 0) CheckInput();
     }
 
     private void CheckInput()
@@ -41,5 +41,26 @@ public class Loadout : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Alpha3)) OnSpellStart?.Invoke(rightHandWeapon, rightHandSpell1);
         if (Input.GetKeyDown(KeyCode.E)) OnSpellStart?.Invoke(rightHandWeapon, rightHandSpell1);
+    }
+
+    private void SetLoadout(LoadoutSelect ls)
+    {
+        rightHandWeapon = ls.rhweapon;
+        leftHandWeapon = ls.lhweapon;
+
+        rightHandSpell1 = ls.rhspell1;
+        rightHandSpell2 = ls.rhspell2;
+        leftHandSpell1 = ls.lhspell1;
+        leftHandSpell2 = ls.lhspell2;
+    }
+
+    private void OnEnable()
+    {
+        LoadoutSelect.OnLoadoutConfirm += SetLoadout;
+    }
+
+    private void OnDisable()
+    {
+        LoadoutSelect.OnLoadoutConfirm -= SetLoadout;
     }
 }

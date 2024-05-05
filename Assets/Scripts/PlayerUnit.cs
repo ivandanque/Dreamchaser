@@ -20,8 +20,6 @@ public class PlayerUnit : MonoBehaviour
     public Transform targetedEnemy;
 
     private bool isFallen;
-
-    public bool isAttacking = false;
     private bool isRecentlyDamaged;
 
     private void Start()
@@ -33,7 +31,7 @@ public class PlayerUnit : MonoBehaviour
 
     private void Update()
     {
-        if (isAttacking) return;
+        
     }
 
     public void TakeDamage(float damage)

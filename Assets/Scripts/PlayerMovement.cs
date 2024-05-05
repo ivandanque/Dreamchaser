@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-using static PlayerController;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -36,14 +35,15 @@ public class PlayerMovement : MonoBehaviour
     [HideInInspector] public float maxYSpeed;
     public bool isDashing;
     public bool isAttacking;
+    public bool isPaused;
 
     private enum MovementState
     {
+        Paused,
         Walking,
         Sprinting,
         Dashing,
-        Airborne,
-        Attacking
+        Airborne
     }
     private MovementState State;
 
@@ -76,7 +76,8 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space)) jumpBufferCtr = jumpBufferTime;
         else jumpBufferCtr -= Time.deltaTime;
 
-        if (State == MovementState.Dashing || State == MovementState.Attacking) return; //Don't move while dashing or attacking
+        if (State == MovementState.Dashing) return; //Don't move while dashing
+        if (State == MovementState.Paused) return; //Don't move while paused
 
         moveDirection = orientation.forward * Input.GetAxisRaw("Vertical") + orientation.right * Input.GetAxisRaw("Horizontal");
         if (isGrounded) rb.AddForce(10f * moveSpeed * moveDirection.normalized, ForceMode.Force);
@@ -116,14 +117,14 @@ public class PlayerMovement : MonoBehaviour
         readyToJump = true;
     }
 
-    private void Attack()
+    private void Pause()
     {
-        isAttacking = true;
+        isPaused = true;
     }
 
-    private void NotAttack()
+    private void Unpause()
     {
-        isAttacking = false;
+        isPaused = false;
     }
 
     private float DesiredMoveSpeed;
@@ -133,16 +134,16 @@ public class PlayerMovement : MonoBehaviour
 
     private void StateHandler()
     {
-        if (isAttacking)
-        {
-            State = MovementState.Attacking;
-            DesiredMoveSpeed = 0;
-        }
-        else if (isDashing)
+        if (isDashing)
         {
             State = MovementState.Dashing;
             DesiredMoveSpeed = dashSpeed;
             SpeedChangeFactor = dashSpeedChangeFactor;
+        }
+        else if (isPaused)
+        {
+            State = MovementState.Paused;
+            DesiredMoveSpeed = 0f;
         }
         else if (isGrounded && Input.GetKey(KeyCode.LeftShift))
         {
@@ -207,13 +208,13 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnEnable()
     {
-        PlayerAttackHandler.OnPlayerAttackStart += Attack;
-        PlayerAttackHandler.OnPlayerAttackEnd += NotAttack;
+        PlayerAttackHandler.OnPlayerAttackStart += Pause;
+        PlayerAttackHandler.OnPlayerAttackEnd += Unpause;
     }
 
     private void OnDisable()
     {
-        PlayerAttackHandler.OnPlayerAttackStart -= Attack;
-        PlayerAttackHandler.OnPlayerAttackEnd -= NotAttack;
+        PlayerAttackHandler.OnPlayerAttackEnd -= Unpause;
+        PlayerAttackHandler.OnPlayerAttackStart -= Pause;
     }
 }

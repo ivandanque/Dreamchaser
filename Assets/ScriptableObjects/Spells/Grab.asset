@@ -9,15 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b213c92bfaf15774b886753b051693d6, type: 3}
-  m_Name: Scepter
+  m_Script: {fileID: 11500000, guid: 8aae7a4e9c9fe434898a4dcaabfe0434, type: 3}
+  m_Name: Grab
   m_EditorClassIdentifier: 
   description: 
-  baseAttack: 30
-  basicAttackTime: 1.5
-  attackHitType: 3
-  basicAttackLength: 0
-  basicAttackWidth: 0
-  basicAttackHeight: 0
-  basicAttackRadius: 2
-  vfxPrefab: {fileID: 0}
+  attackScaling: 0
+  spellTime: 0
+  spellType: 0
+  spellWidth: 0
+  spellHeight: 0
+  spellLength: 0
+  spellRadius: 0

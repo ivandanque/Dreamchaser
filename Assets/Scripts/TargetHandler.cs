@@ -39,8 +39,12 @@ public class TargetHandler : MonoBehaviour
         if (validTargets.Count > 0)
         {
             FindClosestTarget();
-            OnTargetAcquired?.Invoke(closestTarget);
-            ShowTargetCursor();
+            if (closestTarget != null)
+            {
+                OnTargetAcquired?.Invoke(closestTarget);
+                ShowTargetCursor();
+            }
+            
         }
         else HideTargetCursor();
     }

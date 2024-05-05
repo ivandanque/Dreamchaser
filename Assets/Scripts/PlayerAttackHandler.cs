@@ -12,11 +12,12 @@ public class PlayerAttackHandler : MonoBehaviour
     public BoxCollider hitboxCollider;
     public LayerMask enemyLayer;
     public float playerCapsuleRadius;
-
+    public ParticleSystem ps;
     private Weapon currentWeapon;
     private Spell currentSpell;
     private GameObject assignedObject;
     private GameObject targetedEnemy;
+    private bool isAttacking = false;
 
     public static event Action OnPlayerAttackStart;
     public static event Action OnPlayerAttackEnd;
@@ -29,12 +30,17 @@ public class PlayerAttackHandler : MonoBehaviour
 
     private void InitializeWeapon(Weapon weapon)
     {
+        if (isAttacking) return;
+        if (targetedEnemy == null) return;
         currentWeapon = weapon;
+        isAttacking = true;
         CheckWeaponType();
     }
 
     private void StartSpell(Weapon weapon, Spell spell)
-    {
+    { 
+        if (isAttacking) return;
+        if (targetedEnemy == null) return;
         currentWeapon = weapon;
         currentSpell = spell;
         CheckSpellType();
@@ -45,7 +51,8 @@ public class PlayerAttackHandler : MonoBehaviour
         modelTransform.LookAt(new Vector3(targetedEnemy.transform.position.x, transform.position.y, targetedEnemy.transform.position.z));
         OnPlayerAttackStart?.Invoke();
         if (currentWeapon.attackHitType == AttackHitType.Hitbox) ActivateWeaponHitbox();
-        if (currentWeapon.attackHitType == AttackHitType.Projectile) ProjectileAttack();
+        if (currentWeapon.attackHitType == AttackHitType.Projectile) FireProjectile();
+        if (currentWeapon.attackHitType == AttackHitType.Point) FireAtPoint();
     }
 
     private void ActivateWeaponHitbox()
@@ -65,6 +72,7 @@ public class PlayerAttackHandler : MonoBehaviour
     {
         yield return new WaitForSeconds(currentWeapon.basicAttackTime);
         hitboxCollider.enabled = false;
+        isAttacking = false;
         OnPlayerAttackEnd?.Invoke();
     }
 
@@ -73,7 +81,7 @@ public class PlayerAttackHandler : MonoBehaviour
         modelTransform.LookAt(new Vector3(targetedEnemy.transform.position.x, transform.position.y, targetedEnemy.transform.position.z));
         OnPlayerAttackStart?.Invoke();
         if (currentWeapon.attackHitType == AttackHitType.Hitbox) ActivateSpellHitbox();
-        if (currentWeapon.attackHitType == AttackHitType.Projectile) ProjectileAttack();
+        if (currentWeapon.attackHitType == AttackHitType.Projectile) FireProjectile();
     }
 
     private void ActivateSpellHitbox()
@@ -93,12 +101,33 @@ public class PlayerAttackHandler : MonoBehaviour
     {
         yield return new WaitForSeconds(currentSpell.spellTime);
         hitboxCollider.enabled = false;
+        isAttacking = false;
         OnPlayerAttackEnd?.Invoke();
     }
 
-    private void ProjectileAttack()
+    private void FireProjectile()
     {
 
+    }
+
+    private void FireAtPoint()
+    {
+        if (Physics.Raycast(modelTransform.position, modelTransform.forward, out RaycastHit hit, currentWeapon.basicAttackLength, enemyLayer))
+        {
+            ps = Instantiate(currentWeapon.vfxPrefab, transform).GetComponent<ParticleSystem>();
+            ps.transform.rotation = modelTransform.rotation;
+            if (ps != null) ps.Play();
+            hit.transform.GetComponent<EnemyUnit>().TakeDamage(BasicAttackDamage());
+        }
+        StartCoroutine(Ceasefire());
+    }
+
+    IEnumerator Ceasefire()
+    {
+        yield return new WaitForSeconds(currentWeapon.basicAttackTime);
+        if (ps != null) Destroy(ps.gameObject);
+        isAttacking = false;
+        OnPlayerAttackEnd?.Invoke();
     }
 
     private float BasicAttackDamage()
