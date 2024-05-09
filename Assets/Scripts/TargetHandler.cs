@@ -95,10 +95,4 @@ public class TargetHandler : MonoBehaviour
     {
         targetCursor.SetActive(false);
     }
-
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, targetingRange);
-    }
 }

@@ -463,7 +463,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca45a80f90151fc4bb4e17238c6a450f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 10
+  walkSpeed: 2.5
   sprintMultiplier: 1.5
   orientation: {fileID: 5672941273681903465}
   rb: {fileID: 3584831988750642488}
@@ -473,13 +473,13 @@ MonoBehaviour:
     m_Bits: 64
   groundDrag: 0
   isGrounded: 0
-  jumpForce: 10
+  jumpForce: 7.5
   jumpCooldown: 0.5
   airMultiplier: 1
   coyoteTime: 0.1
   jumpBufferTime: 0.2
-  dashSpeed: 20
-  dashSpeedChangeFactor: 12
+  dashSpeed: 7.5
+  dashSpeedChangeFactor: 20
   maxYSpeed: 0
   isDashing: 0
   isAttacking: 0
@@ -498,9 +498,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Orientation: {fileID: 5672941273681903465}
   PlayerCamera: {fileID: 0}
-  DashForce: 20
+  DashForce: 15
   DashUpwardForce: 0
-  DashUpwardSpeedCap: 20
+  DashUpwardSpeedCap: 10
   DashTime: 0.5
   DashCooldown: 1
   DashBufferTime: 0.2
