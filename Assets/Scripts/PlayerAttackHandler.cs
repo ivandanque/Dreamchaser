@@ -79,10 +79,13 @@ public class PlayerAttackHandler : MonoBehaviour
         Collider[] cols = Physics.OverlapBox(hitboxCollider.bounds.center, hitboxCollider.bounds.extents, Quaternion.identity, enemyLayer);
         if (cols.Length > 0)
         {
-            ps = Instantiate(currentWeapon.vfxPrefab).GetComponent<ParticleSystem>();
-            ps.transform.position = transform.position;
-            ps.transform.rotation = modelTransform.rotation;
-            if (ps != null) ps.Play();
+            if (ps != null)
+            {
+                ps = Instantiate(currentWeapon.vfxPrefab).GetComponent<ParticleSystem>();
+                ps.transform.position = transform.position;
+                ps.transform.rotation = modelTransform.rotation;
+                ps.Play();
+            }
             for (int i = 0; i < cols.Length; i++) cols[i].GetComponent<EnemyUnit>().TakeDamage(BasicAttackDamage());
         }
 

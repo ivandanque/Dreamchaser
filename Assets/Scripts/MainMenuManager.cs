@@ -15,13 +15,13 @@ public class MainMenuManager : MonoBehaviour
     {
         switch (level)
         {
-            case 0:
+            case 1:
                 SceneManager.LoadScene("Level1");
                 break;
-            case 1:
+            case 2:
                 SceneManager.LoadScene("Level2");
                 break;
-            case 2:
+            case 3:
                 SceneManager.LoadScene("Level3");
                 break;
             default:
@@ -34,5 +34,15 @@ public class MainMenuManager : MonoBehaviour
     {
         Debug.Log("Game Closed");
         Application.Quit();
+    }
+
+    private void OnEnable()
+    {
+        Portal.OnLevelComplete += LoadLevel;
+    }
+
+    private void OnDisable()
+    {
+        Portal.OnLevelComplete -= LoadLevel;
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -22,6 +23,8 @@ public class PlayerUnit : MonoBehaviour
     private bool isFallen;
     private bool isRecentlyDamaged;
 
+    public static event Action OnPlayerDeath;
+
     private void Start()
     {
         PM = GetComponent<PlayerMovement>();
@@ -39,6 +42,12 @@ public class PlayerUnit : MonoBehaviour
         isRecentlyDamaged = true;
         currentHealth -= damage * DefenseMultiplier();
         healthBar.SetHealth(currentHealth);
+        if (currentHealth <= 0) OnPlayerDeath?.Invoke();
+    }
+
+    public void Kill()
+    {
+        TakeDamage(maxHealth / DefenseMultiplier());
     }
 
     private float DefenseMultiplier()

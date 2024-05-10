@@ -44,10 +44,11 @@ public class EnemyUnit : MonoBehaviour
     public static event Action<EnemyUnit, AttackHit> OnHit;
     public static event Action OnHitboxHit;
     public static event Action OnProjectileHit;
+    public static event Action OnEnemyDeath;
 
     private void Start()
     {
-        player = GameObject.Find("Player").transform;
+        player = GameObject.FindGameObjectWithTag("Player").transform;
         EAH = GetComponent<EnemyAttackHandler>();
         agent = GetComponent<NavMeshAgent>();
     }
@@ -114,22 +115,16 @@ public class EnemyUnit : MonoBehaviour
     {
         health -= damage * DefenseMultiplier();
         Debug.Log(string.Format("I, {0}, took {1} damage!", name, damage));
-        if (health <= 0) Destroy(this.gameObject, 1);
+        if (health <= 0)
+        {
+            OnEnemyDeath?.Invoke();
+            Destroy(this.gameObject, 0.2f);
+        }
     }
 
     private float DefenseMultiplier()
     {
         return (10 * (defenseFactor - 10)) / ((10 * defenseFactor) - defense - 100);
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(transform.position, sightRange);
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, safeRange);
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, activeAttack == null ? 0 : activeAttack.activationRange);
     }
 
     private void OnEnable()
