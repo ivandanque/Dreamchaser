@@ -8,6 +8,10 @@ public class AudioManager : MonoBehaviour
     public static AudioManager Instance { get; private set; }
 
     float volume = 1.0f;
+    float sfxVolume = 1.0f;
+    float musicVolume = 1.0f;
+
+    [SerializeField] private AudioSource audioSource;
 
     private void Awake()
     {
@@ -27,9 +31,18 @@ public class AudioManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+
+
     public void PlaySound(AudioClip clip)
     {
-        GetComponent<AudioSource>().PlayOneShot(clip, volume);
+        audioSource.PlayOneShot(clip, volume);
+    }
+
+    void ChangeVolume(float newVolume, float newSFXVolume, float newMusicVolume)
+    {
+        volume = newVolume;
+        sfxVolume = newSFXVolume;
+        musicVolume = newMusicVolume;
     }
 
 }
