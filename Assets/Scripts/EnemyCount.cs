@@ -1,11 +1,31 @@
 using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 
 public class EnemyCount : MonoBehaviour
 {
+    private GameObject[] enemies;
+
     public TextMeshProUGUI countText;
     public static event Action OnEnemyWipe;
+
+    private void Start()
+    {
+        UpdateEnemyCount();
+    }
+
+    private void UpdateEnemyCount()
+    {
+        StartCoroutine(GetEnemyCount());
+    }
+
+    IEnumerator GetEnemyCount()
+    {
+        yield return new WaitForSeconds(0.25f);
+        enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        UpdateCount(enemies.Length);
+    }
 
     private void UpdateCount(int count)
     {
@@ -15,11 +35,11 @@ public class EnemyCount : MonoBehaviour
 
     private void OnEnable()
     {
-        GameManager.OnCountUpdate += UpdateCount;
+        EnemyUnit.OnEnemyDeath += UpdateEnemyCount;
     }
 
     private void OnDisable()
     {
-        GameManager.OnCountUpdate -= UpdateCount;
+        EnemyUnit.OnEnemyDeath -= UpdateEnemyCount;
     }
 }

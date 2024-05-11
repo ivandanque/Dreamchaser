@@ -6,14 +6,10 @@ using UnityEngine.SceneManagement;
 
 public class Portal : MonoBehaviour
 {
-    public static event Action<int> OnLevelComplete;
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            OnLevelComplete?.Invoke(SceneManager.GetActiveScene().buildIndex + 1);
-
             switch (SceneManager.GetActiveScene().name)
             {
                 case "Level1":
@@ -23,10 +19,10 @@ public class Portal : MonoBehaviour
                     SceneManager.LoadScene("Level3");
                     break;
                 case "Level3":
-                    SceneManager.LoadScene("MainMenu");
+                    SceneManager.LoadScene("MainMenuScene");
                     break;
                 default:
-                    SceneManager.LoadScene("MainMenu");
+                    SceneManager.LoadScene("MainMenuScene");
                     break;
             }
         }

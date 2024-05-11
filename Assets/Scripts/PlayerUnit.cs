@@ -14,9 +14,11 @@ public class PlayerUnit : MonoBehaviour
     public new string name;
     public float maxHealth;
     public float defense;
-    private float defenseFactor;
+    public float defenseFactor;
+    public float damageCooldown;
 
     private float currentHealth;
+    private float damageCooldownCtr;
 
     public Transform targetedEnemy;
 
@@ -34,14 +36,24 @@ public class PlayerUnit : MonoBehaviour
 
     private void Update()
     {
-        
+        CheckDamageRecency();
+    }
+
+    private void CheckDamageRecency()
+    {
+        if (isRecentlyDamaged) damageCooldownCtr -= Time.deltaTime;
+        else damageCooldownCtr = damageCooldown;
+
+        if (damageCooldownCtr <= 0) isRecentlyDamaged = false;
     }
 
     public void TakeDamage(float damage)
     {
+        if (isRecentlyDamaged) return;
         isRecentlyDamaged = true;
         currentHealth -= damage * DefenseMultiplier();
         healthBar.SetHealth(currentHealth);
+        Debug.Log("Player took " + damage * DefenseMultiplier() + " damage!");
         if (currentHealth <= 0) OnPlayerDeath?.Invoke();
     }
 

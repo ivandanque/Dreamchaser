@@ -10,7 +10,6 @@ public class PlayerAttackHandler : MonoBehaviour
     private GameObject assignedProjectile;
     public Transform modelTransform;
     public BoxCollider hitboxCollider;
-    public SphereCollider hitsphereCollider;
     public LayerMask enemyLayer;
     public float playerCapsuleRadius;
     private ParticleSystem ps;
@@ -55,7 +54,6 @@ public class PlayerAttackHandler : MonoBehaviour
         modelTransform.LookAt(new Vector3(targetedEnemy.transform.position.x, transform.position.y, targetedEnemy.transform.position.z));
         OnPlayerAttackStart?.Invoke();
         if (currentWeapon.attackHitType == AttackHitType.Hitbox) ActivateWeaponHitbox();
-        if (currentWeapon.attackHitType == AttackHitType.Hitsphere) ActivateWeaponHitsphere();
         if (currentWeapon.attackHitType == AttackHitType.Projectile) FireProjectile();
         if (currentWeapon.attackHitType == AttackHitType.Hitscan) AttackHitscan();
     }
@@ -96,34 +94,6 @@ public class PlayerAttackHandler : MonoBehaviour
     {
         yield return new WaitForSeconds(currentWeapon.basicAttackTime);
         hitboxCollider.enabled = false;
-        isAttacking = false;
-        OnPlayerAttackEnd?.Invoke();
-    }
-
-    private void ActivateWeaponHitsphere()
-    {
-        hitsphereCollider.radius = currentWeapon.basicAttackRadius;
-        hitsphereCollider.center = new Vector3(0f, 0.75f, currentWeapon.basicAttackRadius + playerCapsuleRadius);
-        hitsphereCollider.transform.rotation = modelTransform.rotation;
-        hitsphereCollider.enabled = true;
-
-        Collider[] cols = Physics.OverlapSphere(hitsphereCollider.center, currentWeapon.basicAttackRadius, enemyLayer);
-        if (cols.Length > 0)
-        {
-            ps = Instantiate(currentWeapon.vfxPrefab).GetComponent<ParticleSystem>();
-            ps.transform.position = transform.position;
-            ps.transform.rotation = modelTransform.rotation;
-            if (ps != null) ps.Play();
-            for (int i = 0; i < cols.Length; i++) cols[i].GetComponent<EnemyUnit>().TakeDamage(BasicAttackDamage());
-        }
-
-        StartCoroutine(DeactivateWeaponHitsphere());
-    }
-
-    IEnumerator DeactivateWeaponHitsphere()
-    {
-        yield return new WaitForSeconds(currentWeapon.basicAttackTime);
-        hitsphereCollider.enabled = false;
         isAttacking = false;
         OnPlayerAttackEnd?.Invoke();
     }

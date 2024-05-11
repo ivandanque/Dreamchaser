@@ -524,6 +524,8 @@ MonoBehaviour:
   name: 
   maxHealth: 100
   defense: 0
+  defenseFactor: 0
+  damageCooldown: 0
   targetedEnemy: {fileID: 0}
 --- !u!114 &5588452797821852221
 MonoBehaviour:
@@ -576,9 +578,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6795640204640e3449693ea862f29a79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rightHandWeapon: {fileID: 11400000, guid: b19063c79d56a4249a74ec69af6e44ea, type: 2}
-  rightHandSpell1: {fileID: 11400000, guid: ccebbfe837f58df45be14a95500ebd57, type: 2}
+  rightHandWeapon: {fileID: 11400000, guid: c6fb4f28120407d4886cde42e5c2cd44, type: 2}
+  rightHandSpell1: {fileID: 11400000, guid: bd4908d922c3a7a4b98cae3baaba1892, type: 2}
   rightHandSpell2: {fileID: 11400000, guid: 09002ec40f0384541b27c0622b76ace4, type: 2}
-  leftHandWeapon: {fileID: 11400000, guid: c6fb4f28120407d4886cde42e5c2cd44, type: 2}
+  leftHandWeapon: {fileID: 11400000, guid: b19063c79d56a4249a74ec69af6e44ea, type: 2}
   leftHandSpell1: {fileID: 11400000, guid: 57742c94c0f4964429a9888a253ab739, type: 2}
   leftHandSpell2: {fileID: 11400000, guid: e9f7b30305e2dc748acb060b1408afae, type: 2}

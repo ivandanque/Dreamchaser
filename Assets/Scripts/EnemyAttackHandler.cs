@@ -41,6 +41,8 @@ public class EnemyAttackHandler : MonoBehaviour
     private void ActivateHitbox()
     {
         Collider[] col = Physics.OverlapBox(assignedCollider.bounds.center, assignedCollider.bounds.extents, assignedCollider.transform.rotation, eu.playerLayer);
+        //Debug.Log(assignedCollider.bounds.center);
+        //Debug.Log(assignedCollider.transform.rotation.eulerAngles);
         foreach (Collider cold in col)
         {
             pu = cold.GetComponent<PlayerUnit>();
@@ -58,7 +60,7 @@ public class EnemyAttackHandler : MonoBehaviour
     {
         assignedProjectile = Instantiate(assignedObject, eu.transform.position, Quaternion.identity);
         assignedProjectile.GetComponent<ProjectileContainer>().SetAttack(CalculateDamage(), attackHit.activeTime);
-        assignedProjectile.GetComponent<Rigidbody>().AddForce(eu.transform.forward * attackHit.horizontalSpeed + eu.transform.up * attackHit.verticalSpeed, ForceMode.Impulse);
+        //assignedProjectile.GetComponent<Rigidbody>().AddForce(eu.transform.forward * attackHit.horizontalSpeed + eu.transform.up * attackHit.verticalSpeed, ForceMode.Impulse);
         Invoke(nameof(EndAttack), attackHit.endTime);
     }
 
