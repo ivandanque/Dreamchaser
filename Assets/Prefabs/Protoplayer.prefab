@@ -523,8 +523,8 @@ MonoBehaviour:
   healthBar: {fileID: 0}
   name: 
   maxHealth: 100
-  defense: 0
-  defenseFactor: 0
+  defense: 5
+  defenseFactor: 2
   damageCooldown: 0
   targetedEnemy: {fileID: 0}
 --- !u!114 &5588452797821852221
@@ -561,7 +561,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelTransform: {fileID: 4598873415267030932}
   hitboxCollider: {fileID: 8116768113610483469}
-  hitsphereCollider: {fileID: 5312408319158702764}
   enemyLayer:
     serializedVersion: 2
     m_Bits: 512
