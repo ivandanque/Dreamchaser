@@ -18,4 +18,5 @@ public class Weapon : ScriptableObject
     public float basicAttackRadius;
 
     public GameObject vfxPrefab;
+    public GameObject projectile;
 }

@@ -17,8 +17,8 @@ MonoBehaviour:
   spellCastTime: 1
   spellDuration: 0
   spellType: 2
-  spellWidth: 2
-  spellHeight: 2
+  spellWidth: 0
+  spellHeight: 0
   spellLength: 10
   spellRadius: 0
   vfxPrefab: {fileID: 1398764381724656666, guid: 17095265570004f42981a716e759ef32,

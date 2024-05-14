@@ -18,7 +18,7 @@ public class EnemyUnit : MonoBehaviour
     public float health;
     public float attack;
     public float defense;
-    private float defenseFactor = 0f;
+    public float defenseFactor = 0f;
     public float critChance;
     public float critMultiplier;
 
@@ -72,6 +72,7 @@ public class EnemyUnit : MonoBehaviour
                 queuedAttack = ChooseAttack();
                 if (queuedAttack != null)
                 {
+                    isAttacking = true;
                     Debug.Log(queuedAttack.name);
                     agent.SetDestination(transform.position);
                     attackRange = queuedAttack.activationRange;
@@ -86,7 +87,6 @@ public class EnemyUnit : MonoBehaviour
 
     private void DoAttack(Attack attack)
     {
-        isAttacking = true;
         activeAttack = attack;
 
         foreach (AttackHit hit in attack.attacks)

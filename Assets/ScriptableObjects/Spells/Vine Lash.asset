@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   description: 
   attackScaling: 2
-  spellCastTime: 1
+  spellCastTime: 3
   spellDuration: 3
   spellType: 0
-  spellWidth: 0
-  spellHeight: 0
+  spellWidth: 4
+  spellHeight: 4
   spellLength: 20
   spellRadius: 0
   vfxPrefab: {fileID: 7925437153155648892, guid: 35f37130d0df66544a25530a68a1d07b,

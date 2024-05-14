@@ -133,6 +133,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 7019638822271358910}
+        m_TargetAssemblyTypeName: LoadoutSelect, Assembly-CSharp
+        m_MethodName: ScreenDown
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &28551434153369243
 GameObject:
   m_ObjectHideFlags: 0
@@ -3565,6 +3577,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c819465bb70989b45afc77990eca7f5a, type: 2}
   - {fileID: 11400000, guid: 261185a95ccaeb84e8ba139fb0b3e670, type: 2}
   - {fileID: 11400000, guid: b19063c79d56a4249a74ec69af6e44ea, type: 2}
+  - {fileID: 11400000, guid: 48a79ccf677a9154a88044a135a70cfa, type: 2}
   - {fileID: 11400000, guid: c6fb4f28120407d4886cde42e5c2cd44, type: 2}
   spells:
   - {fileID: 11400000, guid: 41cca310a3b31db49ab81b8bdb266c81, type: 2}
@@ -5489,6 +5502,8 @@ MonoBehaviour:
     - m_Text: Blade
       m_Image: {fileID: 0}
     - m_Text: Gauntlet
+      m_Image: {fileID: 0}
+    - m_Text: Scepter
       m_Image: {fileID: 0}
     - m_Text: Wand
       m_Image: {fileID: 0}
@@ -7795,6 +7810,8 @@ MonoBehaviour:
     - m_Text: Blade
       m_Image: {fileID: 0}
     - m_Text: Gauntlet
+      m_Image: {fileID: 0}
+    - m_Text: Scepter
       m_Image: {fileID: 0}
     - m_Text: Wand
       m_Image: {fileID: 0}

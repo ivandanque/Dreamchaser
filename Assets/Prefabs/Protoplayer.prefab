@@ -167,6 +167,7 @@ Transform:
   m_Children:
   - {fileID: 4796416138686313185}
   - {fileID: 7319114616774428431}
+  - {fileID: 2703591763813106605}
   m_Father: {fileID: 2057627679965204858}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3576870184428523796
@@ -200,7 +201,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2057627679965204858}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &6653712304053328234
+--- !u!1 &5004272344751767448
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -208,51 +209,29 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2603664050028468526}
-  - component: {fileID: 5312408319158702764}
+  - component: {fileID: 2703591763813106605}
   m_Layer: 8
-  m_Name: Hitsphere
+  m_Name: ProjectileSpawnPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2603664050028468526
+--- !u!4 &2703591763813106605
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6653712304053328234}
+  m_GameObject: {fileID: 5004272344751767448}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 1.25}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2057627679965204858}
+  m_Father: {fileID: 4598873415267030932}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!135 &5312408319158702764
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6653712304053328234}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 0
-  serializedVersion: 3
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &7338937192973556073
 GameObject:
   m_ObjectHideFlags: 0
@@ -398,7 +377,6 @@ Transform:
   - {fileID: 4598873415267030932}
   - {fileID: 5672941273681903465}
   - {fileID: 3784701551072778892}
-  - {fileID: 2603664050028468526}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &3584831988750642488
@@ -523,7 +501,9 @@ MonoBehaviour:
   healthBar: {fileID: 0}
   name: 
   maxHealth: 100
-  defense: 0
+  defense: 5
+  defenseFactor: 2
+  damageCooldown: 0
   targetedEnemy: {fileID: 0}
 --- !u!114 &5588452797821852221
 MonoBehaviour:
@@ -559,11 +539,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelTransform: {fileID: 4598873415267030932}
   hitboxCollider: {fileID: 8116768113610483469}
-  hitsphereCollider: {fileID: 5312408319158702764}
   enemyLayer:
     serializedVersion: 2
     m_Bits: 512
   playerCapsuleRadius: 0.5
+  projectileSpawnPoint: {fileID: 2703591763813106605}
 --- !u!114 &994275919582918488
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -576,9 +556,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6795640204640e3449693ea862f29a79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rightHandWeapon: {fileID: 11400000, guid: b19063c79d56a4249a74ec69af6e44ea, type: 2}
-  rightHandSpell1: {fileID: 11400000, guid: ccebbfe837f58df45be14a95500ebd57, type: 2}
+  rightHandWeapon: {fileID: 11400000, guid: c6fb4f28120407d4886cde42e5c2cd44, type: 2}
+  rightHandSpell1: {fileID: 11400000, guid: bd4908d922c3a7a4b98cae3baaba1892, type: 2}
   rightHandSpell2: {fileID: 11400000, guid: 09002ec40f0384541b27c0622b76ace4, type: 2}
-  leftHandWeapon: {fileID: 11400000, guid: c6fb4f28120407d4886cde42e5c2cd44, type: 2}
+  leftHandWeapon: {fileID: 11400000, guid: b19063c79d56a4249a74ec69af6e44ea, type: 2}
   leftHandSpell1: {fileID: 11400000, guid: 57742c94c0f4964429a9888a253ab739, type: 2}
   leftHandSpell2: {fileID: 11400000, guid: e9f7b30305e2dc748acb060b1408afae, type: 2}

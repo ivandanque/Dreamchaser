@@ -10,9 +10,9 @@ public class PlayerAttackHandler : MonoBehaviour
     private GameObject assignedProjectile;
     public Transform modelTransform;
     public BoxCollider hitboxCollider;
-    public SphereCollider hitsphereCollider;
     public LayerMask enemyLayer;
     public float playerCapsuleRadius;
+    public Transform projectileSpawnPoint;
     private ParticleSystem ps;
     private ParticleSystem.MainModule psMain;
     private ParticleSystem psChild;
@@ -55,8 +55,7 @@ public class PlayerAttackHandler : MonoBehaviour
         modelTransform.LookAt(new Vector3(targetedEnemy.transform.position.x, transform.position.y, targetedEnemy.transform.position.z));
         OnPlayerAttackStart?.Invoke();
         if (currentWeapon.attackHitType == AttackHitType.Hitbox) ActivateWeaponHitbox();
-        if (currentWeapon.attackHitType == AttackHitType.Hitsphere) ActivateWeaponHitsphere();
-        if (currentWeapon.attackHitType == AttackHitType.Projectile) FireProjectile();
+        if (currentWeapon.attackHitType == AttackHitType.Projectile) FireWeaponProjectile();
         if (currentWeapon.attackHitType == AttackHitType.Hitscan) AttackHitscan();
     }
     private void CheckSpellType()
@@ -64,7 +63,7 @@ public class PlayerAttackHandler : MonoBehaviour
         modelTransform.LookAt(new Vector3(targetedEnemy.transform.position.x, transform.position.y, targetedEnemy.transform.position.z));
         OnPlayerAttackStart?.Invoke();
         if (currentSpell.spellType == AttackHitType.Hitbox) ActivateSpellHitbox();
-        if (currentSpell.spellType == AttackHitType.Projectile) FireProjectile();
+        if (currentSpell.spellType == AttackHitType.Projectile) FireWeaponProjectile();
         if (currentSpell.spellType == AttackHitType.Hitscan) SpellHitscan();
         if (currentSpell.spellType == AttackHitType.TargetArea) SpellArea();
     }
@@ -100,34 +99,6 @@ public class PlayerAttackHandler : MonoBehaviour
         OnPlayerAttackEnd?.Invoke();
     }
 
-    private void ActivateWeaponHitsphere()
-    {
-        hitsphereCollider.radius = currentWeapon.basicAttackRadius;
-        hitsphereCollider.center = new Vector3(0f, 0.75f, currentWeapon.basicAttackRadius + playerCapsuleRadius);
-        hitsphereCollider.transform.rotation = modelTransform.rotation;
-        hitsphereCollider.enabled = true;
-
-        Collider[] cols = Physics.OverlapSphere(hitsphereCollider.center, currentWeapon.basicAttackRadius, enemyLayer);
-        if (cols.Length > 0)
-        {
-            ps = Instantiate(currentWeapon.vfxPrefab).GetComponent<ParticleSystem>();
-            ps.transform.position = transform.position;
-            ps.transform.rotation = modelTransform.rotation;
-            if (ps != null) ps.Play();
-            for (int i = 0; i < cols.Length; i++) cols[i].GetComponent<EnemyUnit>().TakeDamage(BasicAttackDamage());
-        }
-
-        StartCoroutine(DeactivateWeaponHitsphere());
-    }
-
-    IEnumerator DeactivateWeaponHitsphere()
-    {
-        yield return new WaitForSeconds(currentWeapon.basicAttackTime);
-        hitsphereCollider.enabled = false;
-        isAttacking = false;
-        OnPlayerAttackEnd?.Invoke();
-    }
-
     private void ActivateSpellHitbox()
     {
         hitboxCollider.size = new Vector3(currentSpell.spellWidth, currentSpell.spellHeight, currentSpell.spellLength);
@@ -156,9 +127,20 @@ public class PlayerAttackHandler : MonoBehaviour
         OnPlayerAttackEnd?.Invoke();
     }
 
-    private void FireProjectile()
+    private void FireWeaponProjectile()
     {
+        assignedProjectile = Instantiate(currentWeapon.projectile, projectileSpawnPoint.position, Quaternion.identity);
+        assignedProjectile.transform.forward = modelTransform.forward;
+        assignedProjectile.GetComponent<ProjectileContainer>().SetAttack(BasicAttackDamage(), 1f);
+        assignedProjectile.GetComponent<Rigidbody>().AddForce(modelTransform.forward * 50f, ForceMode.Impulse);
+        StartCoroutine(EndWeaponProjectile());
+    }
 
+    IEnumerator EndWeaponProjectile()
+    {
+        yield return new WaitForSeconds(currentWeapon.basicAttackTime);
+        isAttacking = false;
+        OnPlayerAttackEnd?.Invoke();
     }
 
     private void AttackHitscan()
@@ -187,6 +169,8 @@ public class PlayerAttackHandler : MonoBehaviour
         if (Physics.Raycast(modelTransform.position, modelTransform.forward, out RaycastHit hit, currentSpell.spellLength, enemyLayer))
         {
             ps = Instantiate(currentSpell.vfxPrefab).GetComponent<ParticleSystem>();
+            psMain = ps.main;
+            psMain.startRotationY = modelTransform.rotation.y;
             ps.transform.position = transform.position;
             ps.transform.rotation = modelTransform.rotation;
             if (ps != null) ps.Play();

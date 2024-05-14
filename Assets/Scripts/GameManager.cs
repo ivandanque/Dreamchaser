@@ -7,30 +7,24 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
-    private GameObject[] enemies;
+
+    public Weapon rhweapon;
+    public Weapon lhweapon;
+
+    public Spell rhspell1;
+    public Spell rhspell2;
+    public Spell lhspell1;
+    public Spell lhspell2;
+
+    public float? playerSavedHealth;
+
+    public bool IsLoadoutSaved = false;
 
     public static event Action<int> OnCountUpdate;
 
     private void Awake()
     {
         CreateSingleton();
-    }
-
-    private void Start()
-    {
-        UpdateEnemyCount();
-    }
-
-    private void UpdateEnemyCount()
-    {
-        StartCoroutine(GetEnemyCount());
-    }
-
-    IEnumerator GetEnemyCount()
-    {
-        yield return new WaitForSeconds(0.25f);
-        enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        OnCountUpdate?.Invoke(enemies.Length);
     }
 
     void CreateSingleton()
@@ -46,6 +40,24 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    private void StoreLoadout(LoadoutSelect loadout)
+    {
+        rhweapon = loadout.rhweapon;
+        lhweapon = loadout.lhweapon;
+
+        rhspell1 = loadout.rhspell1;
+        rhspell2 = loadout.rhspell2;
+        lhspell1 = loadout.lhspell1;
+        lhspell2 = loadout.lhspell2;
+
+        IsLoadoutSaved = true;
+    }
+
+    private void StoreCurrentHealth(float currentHealth)
+    {
+        playerSavedHealth = currentHealth;
+    }
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -57,11 +69,13 @@ public class GameManager : MonoBehaviour
 
     private void OnEnable()
     {
-        EnemyUnit.OnEnemyDeath += UpdateEnemyCount;
+        LoadoutSelect.OnPreserveLoadout += StoreLoadout;
+        PlayerUnit.OnSaveHealth += StoreCurrentHealth;
     }
 
     private void OnDisable()
     {
-        EnemyUnit.OnEnemyDeath -= UpdateEnemyCount;
+        LoadoutSelect.OnPreserveLoadout -= StoreLoadout;
+        PlayerUnit.OnSaveHealth -= StoreCurrentHealth;
     }
 }

@@ -18,11 +18,6 @@ public class Loadout : MonoBehaviour
     public static event Action<Weapon> OnBasicAttackStart;
     public static event Action<Weapon, Spell> OnSpellStart;
 
-    private void Start()
-    {
-        
-    }
-
     private void Update()
     {
         if (Time.timeScale != 0) CheckInput();

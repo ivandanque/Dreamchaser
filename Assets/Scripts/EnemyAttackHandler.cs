@@ -7,6 +7,8 @@ using UnityEngine.AI;
 
 public class EnemyAttackHandler : MonoBehaviour
 {
+    public Transform projectileSpawnPoint;
+
     private GameObject assignedProjectile;
     private Collider assignedCollider;
 
@@ -41,6 +43,8 @@ public class EnemyAttackHandler : MonoBehaviour
     private void ActivateHitbox()
     {
         Collider[] col = Physics.OverlapBox(assignedCollider.bounds.center, assignedCollider.bounds.extents, assignedCollider.transform.rotation, eu.playerLayer);
+        //Debug.Log(assignedCollider.bounds.center);
+        //Debug.Log(assignedCollider.transform.rotation.eulerAngles);
         foreach (Collider cold in col)
         {
             pu = cold.GetComponent<PlayerUnit>();
@@ -56,9 +60,10 @@ public class EnemyAttackHandler : MonoBehaviour
 
     private void FireProjectile()
     {
-        assignedProjectile = Instantiate(assignedObject, eu.transform.position, Quaternion.identity);
+        assignedProjectile = Instantiate(attackHit.assignedObject, projectileSpawnPoint.position, eu.transform.rotation);
+        assignedProjectile.transform.forward = eu.transform.forward;
         assignedProjectile.GetComponent<ProjectileContainer>().SetAttack(CalculateDamage(), attackHit.activeTime);
-        assignedProjectile.GetComponent<Rigidbody>().AddForce(eu.transform.forward * attackHit.horizontalSpeed + eu.transform.up * attackHit.verticalSpeed, ForceMode.Impulse);
+        assignedProjectile.GetComponent<Rigidbody>().AddForce(eu.transform.forward * attackHit.horizontalSpeed, ForceMode.Impulse);
         Invoke(nameof(EndAttack), attackHit.endTime);
     }
 

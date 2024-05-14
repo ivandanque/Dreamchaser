@@ -113,6 +113,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   portal: {fileID: 5652218949177063002}
+  audioClip: {fileID: 8300000, guid: 2ff32ecd0e836a34eb02dc05d724e1f8, type: 3}
 --- !u!1001 &8590593487369782045
 PrefabInstance:
   m_ObjectHideFlags: 0

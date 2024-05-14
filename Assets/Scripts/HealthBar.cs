@@ -18,6 +18,6 @@ public class HealthBar : MonoBehaviour
     public void SetHealth(float health)
     {
         slider.value = health;
-        healthText.text = string.Format("{0} / {1}", slider.value, slider.maxValue);
+        healthText.text = string.Format("{0:0} / {1}", slider.value, slider.maxValue);
     }
 }

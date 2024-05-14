@@ -33,6 +33,12 @@ public class LoadoutSelect : MonoBehaviour
     private bool isScreenUp = false;
 
     public static event Action<LoadoutSelect> OnLoadoutConfirm;
+    public static event Action<LoadoutSelect> OnPreserveLoadout;
+
+    public void Start()
+    {
+        
+    }
 
     public void Update()
     {
@@ -41,9 +47,9 @@ public class LoadoutSelect : MonoBehaviour
             if (!isScreenUp)
             {
                 loadoutPanel.SetActive(true);
+                Invoke(nameof(InitLoadout), 0.02f);
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
-                Time.timeScale = 0f;
                 isScreenUp = true;
             }
             else ScreenDown();
@@ -69,7 +75,22 @@ public class LoadoutSelect : MonoBehaviour
         lhspell2 = spells.Find(spell => spell.name.Equals(lhs2Dropdown.captionText.text));
 
         OnLoadoutConfirm?.Invoke(this);
-        ScreenDown();
+        OnPreserveLoadout?.Invoke(this);
+    }
+
+    private void GrabLoadout()
+    {
+        Loadout loadout = GameObject.FindGameObjectWithTag("Player").GetComponent<Loadout>();
+
+        rhwDropdown.captionText.text = loadout.rightHandWeapon.name;
+        lhwDropdown.captionText.text = loadout.leftHandWeapon.name;
+
+        lhs1Dropdown.captionText.text = loadout.leftHandSpell1.name;
+        lhs2Dropdown.captionText.text = loadout.leftHandSpell2.name;
+        rhs1Dropdown.captionText.text = loadout.rightHandSpell1.name;
+        rhs2Dropdown.captionText.text = loadout.rightHandSpell2.name;
+
+        SetLoadout();
     }
 
     public void ScreenDown()
@@ -78,5 +99,26 @@ public class LoadoutSelect : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         isScreenUp = false;
         loadoutPanel.SetActive(false);
+    }
+
+    private void LoadLoadout()
+    {
+        rhwDropdown.captionText.text = GameManager.Instance.rhweapon.name;
+        lhwDropdown.captionText.text = GameManager.Instance.lhweapon.name;
+
+        lhs1Dropdown.captionText.text = GameManager.Instance.lhspell1.name;
+        lhs2Dropdown.captionText.text = GameManager.Instance.lhspell2.name;
+        rhs1Dropdown.captionText.text = GameManager.Instance.rhspell1.name;
+        rhs2Dropdown.captionText.text = GameManager.Instance.rhspell2.name;
+
+        SetLoadout();
+    }
+
+    private void InitLoadout()
+    {
+        if (GameManager.Instance != null && GameManager.Instance.IsLoadoutSaved) LoadLoadout();
+        else GrabLoadout();
+
+        Time.timeScale = 0f;
     }
 }

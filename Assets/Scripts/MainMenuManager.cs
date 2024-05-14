@@ -25,7 +25,7 @@ public class MainMenuManager : MonoBehaviour
                 SceneManager.LoadScene("Level3");
                 break;
             default:
-                SceneManager.LoadScene("MainMenu");
+                SceneManager.LoadScene("MainMenuScene");
                 break;
         }
     }
@@ -34,15 +34,5 @@ public class MainMenuManager : MonoBehaviour
     {
         Debug.Log("Game Closed");
         Application.Quit();
-    }
-
-    private void OnEnable()
-    {
-        Portal.OnLevelComplete += LoadLevel;
-    }
-
-    private void OnDisable()
-    {
-        Portal.OnLevelComplete -= LoadLevel;
     }
 }

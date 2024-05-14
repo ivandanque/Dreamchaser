@@ -14,10 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   description: 
   baseAttack: 30
-  basicAttackTime: 1.5
+  basicAttackTime: 2
   attackHitType: 3
   basicAttackLength: 0
   basicAttackWidth: 0
   basicAttackHeight: 0
   basicAttackRadius: 2
   vfxPrefab: {fileID: 0}
+  projectile: {fileID: 1050917745295358586, guid: 275665790a4223542bd35ad5ba28bc70,
+    type: 3}
