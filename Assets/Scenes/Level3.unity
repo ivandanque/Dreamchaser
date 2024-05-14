@@ -16327,12 +16327,12 @@ PrefabInstance:
     - target: {fileID: 1294272179122635590, guid: 5d9f3507322e494478c2f9ec715ab77c,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.000000021954929
+      value: 0.00000002195493
       objectReference: {fileID: 0}
     - target: {fileID: 1294272179122635590, guid: 5d9f3507322e494478c2f9ec715ab77c,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.000000013568892
+      value: -0.000000013568893
       objectReference: {fileID: 0}
     - target: {fileID: 1294272179510840694, guid: 5d9f3507322e494478c2f9ec715ab77c,
         type: 3}
@@ -16352,12 +16352,12 @@ PrefabInstance:
     - target: {fileID: 1294272179510840694, guid: 5d9f3507322e494478c2f9ec715ab77c,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.000000021150345
+      value: 0.00000002115035
       objectReference: {fileID: 0}
     - target: {fileID: 1294272179510840694, guid: 5d9f3507322e494478c2f9ec715ab77c,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.0000000120325305
+      value: -0.000000012032532
       objectReference: {fileID: 0}
     - target: {fileID: 1294272180620480870, guid: 5d9f3507322e494478c2f9ec715ab77c,
         type: 3}
@@ -17466,12 +17466,6 @@ Transform:
 --- !u!4 &785983455 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5672941273681903465, guid: 148af16a997336b418cead2858d28841,
-    type: 3}
-  m_PrefabInstance: {fileID: 785983453}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &785983456 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4598873415267030932, guid: 148af16a997336b418cead2858d28841,
     type: 3}
   m_PrefabInstance: {fileID: 785983453}
   m_PrefabAsset: {fileID: 0}
@@ -22028,6 +22022,11 @@ PrefabInstance:
     - target: {fileID: 1101686805378910909, guid: 29649b89052daf848aa5f363e8633b8d,
         type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1670629343765538492, guid: 29649b89052daf848aa5f363e8633b8d,
+        type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3612779600832669890, guid: 29649b89052daf848aa5f363e8633b8d,
@@ -37800,7 +37799,7 @@ PrefabInstance:
         type: 3}
       propertyPath: PlayerObject
       value: 
-      objectReference: {fileID: 785983456}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
