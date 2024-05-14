@@ -415,9 +415,9 @@ MonoBehaviour:
     - attackType: 3
       attackScaling: 1
       description: 
-      startTime: 0.5
+      startTime: 1
       activeTime: 1
-      endTime: 0.5
+      endTime: 1
       interruptValue: 0
       horizontalSpeed: 50
       verticalSpeed: 1
