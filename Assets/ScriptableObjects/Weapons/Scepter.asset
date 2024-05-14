@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   description: 
   baseAttack: 30
-  basicAttackTime: 2
+  basicAttackTime: 1.5
   attackHitType: 3
   basicAttackLength: 0
   basicAttackWidth: 0
