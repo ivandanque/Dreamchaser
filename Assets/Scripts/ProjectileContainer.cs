@@ -26,7 +26,7 @@ public class ProjectileContainer : MonoBehaviour
 
     private void Explosion()
     {
-        Instantiate(projectileVFX, transform.position, Quaternion.identity).GetComponent<ParticleSystem>().Play();
+        if (projectileVFX != null) Instantiate(projectileVFX, transform.position, Quaternion.identity).GetComponent<ParticleSystem>().Play();
     }
 
     public void SetAttack(float damage, float lifetime)
