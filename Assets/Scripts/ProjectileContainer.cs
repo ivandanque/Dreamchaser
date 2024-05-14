@@ -2,20 +2,18 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AdaptivePerformance.VisualScripting;
 
 public class ProjectileContainer : MonoBehaviour
 {
     public AttackHit attackHit;
-    public float radius;
     private float damage;
 
     private float lifeTime;
     public LayerMask playerLayer;
     public LayerMask enemyLayer;
+    public ParticleSystem projectileVFX;
     private bool isAlive = false;
-
-    public static event Action<float> OnPlayerHit;
-    public static event Action<float> OnEnemyHit;
 
     private void Update()
     {
@@ -24,6 +22,11 @@ public class ProjectileContainer : MonoBehaviour
             lifeTime -= Time.deltaTime;
             if (lifeTime <= 0) Destroy(gameObject);
         }
+    }
+
+    private void Explosion()
+    {
+        Instantiate(projectileVFX, transform.position, Quaternion.identity).GetComponent<ParticleSystem>().Play();
     }
 
     public void SetAttack(float damage, float lifetime)
@@ -37,16 +40,16 @@ public class ProjectileContainer : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            Collider[] cols = Physics.OverlapSphere(transform.position, radius, playerLayer);
-            for (int i = 0; i < cols.Length; i++) OnPlayerHit?.Invoke(damage);
+            collision.gameObject.GetComponent<PlayerUnit>().TakeDamage(damage);
             Destroy(gameObject);
         }
 
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            Collider[] cols = Physics.OverlapSphere(transform.position, radius, enemyLayer);
-            for (int i = 0; i < cols.Length; i++) OnEnemyHit?.Invoke(damage);
+            collision.gameObject.GetComponent<EnemyUnit>().TakeDamage(damage);
+            Explosion();
             Destroy(gameObject);
         }
+        
     }
 }

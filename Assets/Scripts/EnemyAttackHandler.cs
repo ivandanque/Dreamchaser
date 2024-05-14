@@ -7,6 +7,8 @@ using UnityEngine.AI;
 
 public class EnemyAttackHandler : MonoBehaviour
 {
+    public Transform projectileSpawnPoint;
+
     private GameObject assignedProjectile;
     private Collider assignedCollider;
 
@@ -58,9 +60,10 @@ public class EnemyAttackHandler : MonoBehaviour
 
     private void FireProjectile()
     {
-        assignedProjectile = Instantiate(assignedObject, eu.transform.position, Quaternion.identity);
+        assignedProjectile = Instantiate(attackHit.assignedObject, projectileSpawnPoint.position, eu.transform.rotation);
+        assignedProjectile.transform.forward = eu.transform.forward;
         assignedProjectile.GetComponent<ProjectileContainer>().SetAttack(CalculateDamage(), attackHit.activeTime);
-        //assignedProjectile.GetComponent<Rigidbody>().AddForce(eu.transform.forward * attackHit.horizontalSpeed + eu.transform.up * attackHit.verticalSpeed, ForceMode.Impulse);
+        assignedProjectile.GetComponent<Rigidbody>().AddForce(eu.transform.forward * attackHit.horizontalSpeed, ForceMode.Impulse);
         Invoke(nameof(EndAttack), attackHit.endTime);
     }
 

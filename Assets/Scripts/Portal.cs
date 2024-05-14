@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 
 public class Portal : MonoBehaviour
 {
+    public static event Action OnPlayerTeleport;
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
@@ -14,9 +16,11 @@ public class Portal : MonoBehaviour
             {
                 case "Level1":
                     SceneManager.LoadScene("Level2");
+                    OnPlayerTeleport?.Invoke();
                     break;
                 case "Level2":
                     SceneManager.LoadScene("Level3");
+                    OnPlayerTeleport?.Invoke();
                     break;
                 case "Level3":
                     SceneManager.LoadScene("MainMenuScene");

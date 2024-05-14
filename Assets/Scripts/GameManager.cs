@@ -16,6 +16,8 @@ public class GameManager : MonoBehaviour
     public Spell lhspell1;
     public Spell lhspell2;
 
+    public float? playerSavedHealth;
+
     public bool IsLoadoutSaved = false;
 
     public static event Action<int> OnCountUpdate;
@@ -51,6 +53,11 @@ public class GameManager : MonoBehaviour
         IsLoadoutSaved = true;
     }
 
+    private void StoreCurrentHealth(float currentHealth)
+    {
+        playerSavedHealth = currentHealth;
+    }
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -63,10 +70,12 @@ public class GameManager : MonoBehaviour
     private void OnEnable()
     {
         LoadoutSelect.OnPreserveLoadout += StoreLoadout;
+        PlayerUnit.OnSaveHealth += StoreCurrentHealth;
     }
 
     private void OnDisable()
     {
         LoadoutSelect.OnPreserveLoadout -= StoreLoadout;
+        PlayerUnit.OnSaveHealth -= StoreCurrentHealth;
     }
 }

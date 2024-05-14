@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class PlayerUnit : MonoBehaviour
@@ -26,12 +27,14 @@ public class PlayerUnit : MonoBehaviour
     private bool isRecentlyDamaged;
 
     public static event Action OnPlayerDeath;
+    public static event Action<float> OnSaveHealth;
 
     private void Start()
     {
         PM = GetComponent<PlayerMovement>();
-        currentHealth = maxHealth;
+        currentHealth = GameManager.Instance.playerSavedHealth ?? maxHealth;
         healthBar.SetMaxHealth(maxHealth);
+        healthBar.SetHealth(currentHealth);
     }
 
     private void Update()
@@ -62,6 +65,11 @@ public class PlayerUnit : MonoBehaviour
         TakeDamage(maxHealth / DefenseMultiplier());
     }
 
+    private void SaveCurrentHealth()
+    {
+        OnSaveHealth?.Invoke(currentHealth);
+    }
+
     private float DefenseMultiplier()
     {
         return (10 * (defenseFactor - 10)) / ((10 * defenseFactor) - defense - 100);
@@ -81,11 +89,11 @@ public class PlayerUnit : MonoBehaviour
 
     private void OnEnable()
     {
-        EnemyAttackHandler.OnPlayerHit += TakeDamage;
+        Portal.OnPlayerTeleport += SaveCurrentHealth;
     }
 
     private void OnDisable()
     {
-        EnemyAttackHandler.OnPlayerHit -= TakeDamage;
+        Portal.OnPlayerTeleport -= SaveCurrentHealth;
     }
 }

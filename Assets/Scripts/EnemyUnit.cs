@@ -18,7 +18,7 @@ public class EnemyUnit : MonoBehaviour
     public float health;
     public float attack;
     public float defense;
-    private float defenseFactor = 0f;
+    public float defenseFactor = 0f;
     public float critChance;
     public float critMultiplier;
 
