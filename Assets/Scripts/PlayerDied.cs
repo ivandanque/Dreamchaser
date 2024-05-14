@@ -9,6 +9,7 @@ public class PlayerDied : MonoBehaviour
     private void OpenLoseScreen()
     {
         loseScreen.SetActive(true);
+        Cursor.lockState = CursorLockMode.None;
         Time.timeScale = 0;
     }
 

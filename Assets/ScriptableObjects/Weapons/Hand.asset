@@ -9,14 +9,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: b213c92bfaf15774b886753b051693d6, type: 3}
   m_Name: Hand
   m_EditorClassIdentifier: Assembly-CSharp::Weapon
-  description: '''Tis your hand!'
+  description: 
   baseAttack: 1
-  basicAttackTime: 0.8
+  basicAttackTime: 0.5
   attackHitType: 0
   basicAttackLength: 1
   basicAttackWidth: 1
   basicAttackHeight: 1
   basicAttackRadius: 0
+  vfxPrefab: {fileID: 0}
+  projectile: {fileID: 0}
